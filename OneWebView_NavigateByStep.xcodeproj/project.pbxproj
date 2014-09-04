@@ -12,13 +12,27 @@
 		84BB2CF019B885FC0073A8FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CEF19B885FC0073A8FE /* UIKit.framework */; };
 		84BB2CF619B885FD0073A8FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2CF419B885FD0073A8FE /* InfoPlist.strings */; };
 		84BB2CF819B885FD0073A8FE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2CF719B885FD0073A8FE /* main.m */; };
-		84BB2CFC19B885FD0073A8FE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2CFB19B885FD0073A8FE /* AppDelegate.m */; };
-		84BB2CFE19B885FD0073A8FE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2CFD19B885FD0073A8FE /* Images.xcassets */; };
 		84BB2D0519B885FD0073A8FE /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D0419B885FD0073A8FE /* XCTest.framework */; };
 		84BB2D0619B885FD0073A8FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CEB19B885FC0073A8FE /* Foundation.framework */; };
 		84BB2D0719B885FD0073A8FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CEF19B885FC0073A8FE /* UIKit.framework */; };
 		84BB2D0F19B885FD0073A8FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D0D19B885FD0073A8FE /* InfoPlist.strings */; };
 		84BB2D1119B885FD0073A8FE /* OneWebView_NavigateByStepTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1019B885FD0073A8FE /* OneWebView_NavigateByStepTests.m */; };
+		84BB2D1F19B886750073A8FE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1B19B886750073A8FE /* AppDelegate.m */; };
+		84BB2D2019B886750073A8FE /* Configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D1C19B886750073A8FE /* Configuration.plist */; };
+		84BB2D2119B886750073A8FE /* DisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1E19B886750073A8FE /* DisplayViewController.m */; };
+		84BB2D2B19B886840073A8FE /* 20-gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2219B886840073A8FE /* 20-gear2.png */; };
+		84BB2D2C19B886840073A8FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2419B886840073A8FE /* InfoPlist.strings */; };
+		84BB2D2D19B886840073A8FE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2619B886840073A8FE /* Images.xcassets */; };
+		84BB2D2E19B886840073A8FE /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2719B886840073A8FE /* Main_iPad.storyboard */; };
+		84BB2D2F19B886840073A8FE /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2819B886840073A8FE /* Main_iPhone.storyboard */; };
+		84BB2D3019B886840073A8FE /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D2A19B886840073A8FE /* Reachability.m */; };
+		84BB2D3519B886930073A8FE /* RefreshSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D3219B886930073A8FE /* RefreshSettingViewController.m */; };
+		84BB2D3619B886930073A8FE /* ServicesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D3419B886930073A8FE /* ServicesManager.m */; };
+		84BB2D3919B886BA0073A8FE /* SettingsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D3819B886BA0073A8FE /* SettingsView.m */; };
+		84BB2D3B19B886F90073A8FE /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D3A19B886F90073A8FE /* EventKit.framework */; };
+		84BB2D3D19B887090073A8FE /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D3C19B887090073A8FE /* MessageUI.framework */; };
+		84BB2D3F19B887130073A8FE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D3E19B887130073A8FE /* SystemConfiguration.framework */; };
+		84BB2D4119B8871F0073A8FE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,14 +54,33 @@
 		84BB2CF519B885FD0073A8FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		84BB2CF719B885FD0073A8FE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		84BB2CF919B885FD0073A8FE /* OneWebView_NavigateByStep-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneWebView_NavigateByStep-Prefix.pch"; sourceTree = "<group>"; };
-		84BB2CFA19B885FD0073A8FE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		84BB2CFB19B885FD0073A8FE /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		84BB2CFD19B885FD0073A8FE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		84BB2D0319B885FD0073A8FE /* OneWebView_NavigateByStepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OneWebView_NavigateByStepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84BB2D0419B885FD0073A8FE /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		84BB2D0C19B885FD0073A8FE /* OneWebView_NavigateByStepTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OneWebView_NavigateByStepTests-Info.plist"; sourceTree = "<group>"; };
 		84BB2D0E19B885FD0073A8FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		84BB2D1019B885FD0073A8FE /* OneWebView_NavigateByStepTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OneWebView_NavigateByStepTests.m; sourceTree = "<group>"; };
+		84BB2D1A19B886750073A8FE /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		84BB2D1B19B886750073A8FE /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		84BB2D1C19B886750073A8FE /* Configuration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configuration.plist; sourceTree = "<group>"; };
+		84BB2D1D19B886750073A8FE /* DisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayViewController.h; sourceTree = "<group>"; };
+		84BB2D1E19B886750073A8FE /* DisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayViewController.m; sourceTree = "<group>"; };
+		84BB2D2219B886840073A8FE /* 20-gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "20-gear2.png"; sourceTree = "<group>"; };
+		84BB2D2519B886840073A8FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		84BB2D2619B886840073A8FE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		84BB2D2719B886840073A8FE /* Main_iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main_iPad.storyboard; sourceTree = "<group>"; };
+		84BB2D2819B886840073A8FE /* Main_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main_iPhone.storyboard; sourceTree = "<group>"; };
+		84BB2D2919B886840073A8FE /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		84BB2D2A19B886840073A8FE /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		84BB2D3119B886920073A8FE /* RefreshSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshSettingViewController.h; sourceTree = "<group>"; };
+		84BB2D3219B886930073A8FE /* RefreshSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RefreshSettingViewController.m; sourceTree = "<group>"; };
+		84BB2D3319B886930073A8FE /* ServicesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServicesManager.h; sourceTree = "<group>"; };
+		84BB2D3419B886930073A8FE /* ServicesManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServicesManager.m; sourceTree = "<group>"; };
+		84BB2D3719B886BA0073A8FE /* SettingsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsView.h; sourceTree = "<group>"; };
+		84BB2D3819B886BA0073A8FE /* SettingsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsView.m; sourceTree = "<group>"; };
+		84BB2D3A19B886F90073A8FE /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		84BB2D3C19B887090073A8FE /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		84BB2D3E19B887130073A8FE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +88,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84BB2D4119B8871F0073A8FE /* CoreTelephony.framework in Frameworks */,
+				84BB2D3F19B887130073A8FE /* SystemConfiguration.framework in Frameworks */,
+				84BB2D3D19B887090073A8FE /* MessageUI.framework in Frameworks */,
+				84BB2D3B19B886F90073A8FE /* EventKit.framework in Frameworks */,
 				84BB2CEE19B885FC0073A8FE /* CoreGraphics.framework in Frameworks */,
 				84BB2CF019B885FC0073A8FE /* UIKit.framework in Frameworks */,
 				84BB2CEC19B885FC0073A8FE /* Foundation.framework in Frameworks */,
@@ -96,6 +133,10 @@
 		84BB2CEA19B885FC0073A8FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */,
+				84BB2D3E19B887130073A8FE /* SystemConfiguration.framework */,
+				84BB2D3C19B887090073A8FE /* MessageUI.framework */,
+				84BB2D3A19B886F90073A8FE /* EventKit.framework */,
 				84BB2CEB19B885FC0073A8FE /* Foundation.framework */,
 				84BB2CED19B885FC0073A8FE /* CoreGraphics.framework */,
 				84BB2CEF19B885FC0073A8FE /* UIKit.framework */,
@@ -107,9 +148,24 @@
 		84BB2CF119B885FC0073A8FE /* OneWebView_NavigateByStep */ = {
 			isa = PBXGroup;
 			children = (
-				84BB2CFA19B885FD0073A8FE /* AppDelegate.h */,
-				84BB2CFB19B885FD0073A8FE /* AppDelegate.m */,
-				84BB2CFD19B885FD0073A8FE /* Images.xcassets */,
+				84BB2D3719B886BA0073A8FE /* SettingsView.h */,
+				84BB2D3819B886BA0073A8FE /* SettingsView.m */,
+				84BB2D3119B886920073A8FE /* RefreshSettingViewController.h */,
+				84BB2D3219B886930073A8FE /* RefreshSettingViewController.m */,
+				84BB2D3319B886930073A8FE /* ServicesManager.h */,
+				84BB2D3419B886930073A8FE /* ServicesManager.m */,
+				84BB2D2219B886840073A8FE /* 20-gear2.png */,
+				84BB2D2319B886840073A8FE /* en.lproj */,
+				84BB2D2619B886840073A8FE /* Images.xcassets */,
+				84BB2D2719B886840073A8FE /* Main_iPad.storyboard */,
+				84BB2D2819B886840073A8FE /* Main_iPhone.storyboard */,
+				84BB2D2919B886840073A8FE /* Reachability.h */,
+				84BB2D2A19B886840073A8FE /* Reachability.m */,
+				84BB2D1A19B886750073A8FE /* AppDelegate.h */,
+				84BB2D1B19B886750073A8FE /* AppDelegate.m */,
+				84BB2D1C19B886750073A8FE /* Configuration.plist */,
+				84BB2D1D19B886750073A8FE /* DisplayViewController.h */,
+				84BB2D1E19B886750073A8FE /* DisplayViewController.m */,
 				84BB2CF219B885FD0073A8FE /* Supporting Files */,
 			);
 			path = OneWebView_NavigateByStep;
@@ -142,6 +198,14 @@
 				84BB2D0D19B885FD0073A8FE /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		84BB2D2319B886840073A8FE /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				84BB2D2419B886840073A8FE /* InfoPlist.strings */,
+			);
+			path = en.lproj;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -191,6 +255,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "___FULLUSERNAME___";
 				TargetAttributes = {
+					84BB2CE719B885FC0073A8FE = {
+						DevelopmentTeam = 3BZ9RQY6AQ;
+					};
 					84BB2D0219B885FD0073A8FE = {
 						TestTargetID = 84BB2CE719B885FC0073A8FE;
 					};
@@ -220,7 +287,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				84BB2CF619B885FD0073A8FE /* InfoPlist.strings in Resources */,
-				84BB2CFE19B885FD0073A8FE /* Images.xcassets in Resources */,
+				84BB2D2D19B886840073A8FE /* Images.xcassets in Resources */,
+				84BB2D2C19B886840073A8FE /* InfoPlist.strings in Resources */,
+				84BB2D2E19B886840073A8FE /* Main_iPad.storyboard in Resources */,
+				84BB2D2B19B886840073A8FE /* 20-gear2.png in Resources */,
+				84BB2D2F19B886840073A8FE /* Main_iPhone.storyboard in Resources */,
+				84BB2D2019B886750073A8FE /* Configuration.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,8 +311,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BB2CFC19B885FD0073A8FE /* AppDelegate.m in Sources */,
+				84BB2D1F19B886750073A8FE /* AppDelegate.m in Sources */,
+				84BB2D2119B886750073A8FE /* DisplayViewController.m in Sources */,
+				84BB2D3019B886840073A8FE /* Reachability.m in Sources */,
+				84BB2D3519B886930073A8FE /* RefreshSettingViewController.m in Sources */,
 				84BB2CF819B885FD0073A8FE /* main.m in Sources */,
+				84BB2D3619B886930073A8FE /* ServicesManager.m in Sources */,
+				84BB2D3919B886BA0073A8FE /* SettingsView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -275,6 +352,14 @@
 			isa = PBXVariantGroup;
 			children = (
 				84BB2D0E19B885FD0073A8FE /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		84BB2D2419B886840073A8FE /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				84BB2D2519B886840073A8FE /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -359,6 +444,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OneWebView_NavigateByStep/OneWebView_NavigateByStep-Prefix.pch";
 				INFOPLIST_FILE = "OneWebView_NavigateByStep/OneWebView_NavigateByStep-Info.plist";
@@ -372,6 +458,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OneWebView_NavigateByStep/OneWebView_NavigateByStep-Prefix.pch";
 				INFOPLIST_FILE = "OneWebView_NavigateByStep/OneWebView_NavigateByStep-Info.plist";
