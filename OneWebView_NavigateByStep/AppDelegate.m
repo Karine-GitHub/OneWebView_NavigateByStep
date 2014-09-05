@@ -9,7 +9,7 @@
 #import "AppDelegate.h"
 
 NSDictionary *APPLICATION_FILE;
-NSData *FEED_FILE;
+NSMutableArray *NAVIGATION_STACK;
 NSString *APPLICATION_SUPPORT_PATH;
 BOOL autoRefresh;
 BOOL forceDownloading;
@@ -190,6 +190,11 @@ BOOL roamingIsEnabled;
                         if (!success) {
                             NSLog(@"An error occured during the Creation of Template folder : %@", error);
                         }
+                        success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] withIntermediateDirectories:YES attributes:nil error:&error];
+                        if (!success) {
+                            NSLog(@"An error occured during the Creation of Template folder : %@", error);
+                        }
+
                     } else if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] isDirectory:&isDirectory] || forceDownloading || autoRefresh) {
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
@@ -284,10 +289,8 @@ BOOL roamingIsEnabled;
                 }
             }
             if ([allPages objectForKey:@"LogoUrl"] != [NSNull null]) {
-                for (NSMutableDictionary *allPageImages in [allPages objectForKey:@"LogoUrl"]) {
                     // Loading images
-                    [self saveFile:[allPageImages objectForKey:@"LogoUrl"] fileName:[allPages objectForKey:@"Name"] dirName:@"Images"];
-                }
+                    [self saveFile:[allPages objectForKey:@"LogoUrl"] fileName:[allPages objectForKey:@"Name"] dirName:@"Images"];
             }
         }
     }

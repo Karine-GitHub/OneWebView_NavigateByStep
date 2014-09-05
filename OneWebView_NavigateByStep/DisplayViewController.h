@@ -15,12 +15,8 @@
 @property (strong, nonatomic) IBOutlet UIImageView *img;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *Activity;
 
-typedef NS_ENUM(NSInteger, itemTag) {shareItemTag = 30,
-                                    geolocItemTag = 31,
-                                    contactsItemTag = 32,
-                                    calendarItemTag = 33 };
-
 @property id PageID;
+@property id navigateTo;
 
 @property int webviewI;
 @property int imageI;

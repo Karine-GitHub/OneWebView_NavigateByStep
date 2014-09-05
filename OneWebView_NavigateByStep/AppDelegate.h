@@ -13,7 +13,7 @@
 
 // GLOBAL VARIABLES json files
 extern NSDictionary *APPLICATION_FILE;
-extern NSData *FEED_FILE;
+extern NSMutableArray *NAVIGATION_STACK;
 // END GLOBAL VARIABLES
 
 extern NSString *APPLICATION_SUPPORT_PATH;
