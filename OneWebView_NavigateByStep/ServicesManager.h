@@ -7,14 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UITableViewCellWithSwitch.h"
+
 
 @interface ServicesManager : UITableViewController
 
 @property (strong,nonatomic) NSMutableArray *appMenu;
 @property (strong,nonatomic) NSDictionary *itemMenu;
 @property int nbMenuItem;
-
-@property BOOL isChecked;
-- (void)clickCheckBox:(id)sender;
 
 @end

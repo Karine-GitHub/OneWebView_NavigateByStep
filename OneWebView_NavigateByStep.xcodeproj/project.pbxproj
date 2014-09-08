@@ -33,6 +33,7 @@
 		84BB2D3D19B887090073A8FE /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D3C19B887090073A8FE /* MessageUI.framework */; };
 		84BB2D3F19B887130073A8FE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D3E19B887130073A8FE /* SystemConfiguration.framework */; };
 		84BB2D4119B8871F0073A8FE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */; };
+		84ECF0F819BDF9140088BC40 /* UITableViewCellWithSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,8 @@
 		84BB2D3C19B887090073A8FE /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		84BB2D3E19B887130073A8FE /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		84ECF0F319BDE2A70088BC40 /* UITableViewCellWithSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UITableViewCellWithSwitch.h; sourceTree = "<group>"; };
+		84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellWithSwitch.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +151,7 @@
 		84BB2CF119B885FC0073A8FE /* OneWebView_NavigateByStep */ = {
 			isa = PBXGroup;
 			children = (
+				84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */,
 				84BB2D3719B886BA0073A8FE /* SettingsView.h */,
 				84BB2D3819B886BA0073A8FE /* SettingsView.m */,
 				84BB2D3119B886920073A8FE /* RefreshSettingViewController.h */,
@@ -167,6 +171,7 @@
 				84BB2D1D19B886750073A8FE /* DisplayViewController.h */,
 				84BB2D1E19B886750073A8FE /* DisplayViewController.m */,
 				84BB2CF219B885FD0073A8FE /* Supporting Files */,
+				84ECF0F319BDE2A70088BC40 /* UITableViewCellWithSwitch.h */,
 			);
 			path = OneWebView_NavigateByStep;
 			sourceTree = "<group>";
@@ -316,6 +321,7 @@
 				84BB2D3019B886840073A8FE /* Reachability.m in Sources */,
 				84BB2D3519B886930073A8FE /* RefreshSettingViewController.m in Sources */,
 				84BB2CF819B885FD0073A8FE /* main.m in Sources */,
+				84ECF0F819BDF9140088BC40 /* UITableViewCellWithSwitch.m in Sources */,
 				84BB2D3619B886930073A8FE /* ServicesManager.m in Sources */,
 				84BB2D3919B886BA0073A8FE /* SettingsView.m in Sources */,
 			);
@@ -526,6 +532,7 @@
 				84BB2D1619B885FD0073A8FE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		84BB2D1719B885FD0073A8FE /* Build configuration list for PBXNativeTarget "OneWebView_NavigateByStepTests" */ = {
 			isa = XCConfigurationList;
@@ -534,6 +541,7 @@
 				84BB2D1919B885FD0073A8FE /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

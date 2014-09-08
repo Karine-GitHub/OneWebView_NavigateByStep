@@ -122,6 +122,49 @@ BOOL roamingIsEnabled;
     }
 }
 
++ (BOOL) serviceStatusFor:(NSString *)statusName
+{
+    for (NSMutableDictionary *page in [APPLICATION_FILE objectForKey:@"Pages"]) {
+        if (![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
+            if ([statusName isEqual:[page objectForKey:@"Title"]]) {
+                if ([[NSUserDefaults standardUserDefaults] objectForKey:statusName]) {
+                    return [[NSUserDefaults standardUserDefaults] boolForKey:statusName];
+                }
+            }
+        }
+    }
+    return NO;
+}
+
++ (NSString *)createHTMLwithContent:(NSString *)htmlContent withAppDep:(NSArray *)appDep withPageDep:(NSArray *)pageDep
+{
+    NSString *html;
+    if (htmlContent) {
+        NSMutableString *add;
+        if (appDep && pageDep) {
+            add = [NSMutableString stringWithFormat:@"%@%@", [AppDelegate addFiles:appDep], [AppDelegate addFiles:pageDep]];
+        }
+        else {
+            add = [NSMutableString stringWithString:@""];
+        }
+        html = [NSString stringWithFormat:@"<!DOCTYPE>"
+                "<html>"
+                "<head>"
+                "%@"
+                "</head>"
+                "<body>"
+                "<div id='Main' style='padding:10px;'>"
+                "%@"
+                "</body>"
+                "</head>"
+                "</html>"
+                , add, htmlContent];
+        
+    }
+    
+    return html;
+}
+
 + (NSNumber *) getSizeOf:(NSString *)path
 {
     // TODO : check dossier images (à soustraire du poids des datas)
@@ -263,6 +306,41 @@ BOOL roamingIsEnabled;
         [NSThread sleepForTimeInterval:2.0];
         exit(0);
     }
+}
+
++ (NSMutableString *) addFiles:(NSArray *)dependencies
+{
+    NSMutableString *files;
+    NSString *fileName;
+    
+    if (![dependencies isKindOfClass:[NSNull class]]) {
+        for (NSMutableDictionary *appDep in dependencies) {
+            if ([appDep objectForKey:@"Name"] != [NSNull null]) {
+                if ([appDep objectForKey:@"Path"] == [NSNull null]) {
+                    fileName = [NSString stringWithFormat:@"%@", [appDep objectForKey:@"Name"]];
+                } else {
+                    fileName = [NSString stringWithFormat:@"%@/%@", [appDep objectForKey:@"Path"], [appDep objectForKey:@"Name"]];
+                }
+                if ([[appDep objectForKey:@"Type"] isEqualToString:@"script"]) {
+                    NSString *add = [NSString stringWithFormat:@"<script src='%@' type='text/javascript'></script>", fileName];
+                    if (files) {
+                        files = [NSMutableString stringWithFormat:@"%@%@", files, add];
+                    } else {
+                        files = (NSMutableString *)[NSString stringWithString:add];
+                    }
+                }
+                if ([[appDep objectForKey:@"Type"] isEqualToString:@"style"]) {
+                    NSString *add = [NSString stringWithFormat:@"<link type='text/css' rel='stylesheet' href='%@'></link>", fileName];
+                    if (files) {
+                        files = [NSMutableString stringWithFormat:@"%@%@", files, add];
+                    } else {
+                        files = (NSMutableString *)[NSString stringWithString:add];
+                    }
+                }
+            }
+        }
+    }
+    return files;
 }
 
 - (void) searchDependencies
@@ -419,6 +497,15 @@ BOOL roamingIsEnabled;
             exit(0);
         }
         @finally {
+            // Services configuration
+            for (NSMutableDictionary *page in [APPLICATION_FILE objectForKey:@"Pages"]) {
+                if (![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
+                    if (![[NSUserDefaults standardUserDefaults] objectForKey:[page objectForKey:@"Title"]]) {
+                        // Not configure yet => YES by default
+                        [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:[page objectForKey:@"Title"]]];
+                    }
+                }
+            }
             self.downloadIsFinished = YES;
         }
         if (reloadApp || forceDownloading) {
@@ -428,69 +515,7 @@ BOOL roamingIsEnabled;
     }
 }
 
-+ (NSMutableString *) addFiles:(NSArray *)dependencies
-{
-    NSMutableString *files;
-    NSString *fileName;
-    
-    if (![dependencies isKindOfClass:[NSNull class]]) {
-        for (NSMutableDictionary *appDep in dependencies) {
-            if ([appDep objectForKey:@"Name"] != [NSNull null]) {
-                if ([appDep objectForKey:@"Path"] == [NSNull null]) {
-                    fileName = [NSString stringWithFormat:@"%@", [appDep objectForKey:@"Name"]];
-                } else {
-                    fileName = [NSString stringWithFormat:@"%@/%@", [appDep objectForKey:@"Path"], [appDep objectForKey:@"Name"]];
-                }
-                if ([[appDep objectForKey:@"Type"] isEqualToString:@"script"]) {
-                    NSString *add = [NSString stringWithFormat:@"<script src='%@' type='text/javascript'></script>", fileName];
-                    if (files) {
-                        files = [NSMutableString stringWithFormat:@"%@%@", files, add];
-                    } else {
-                        files = (NSMutableString *)[NSString stringWithString:add];
-                    }
-                }
-                if ([[appDep objectForKey:@"Type"] isEqualToString:@"style"]) {
-                    NSString *add = [NSString stringWithFormat:@"<link type='text/css' rel='stylesheet' href='%@'></link>", fileName];
-                    if (files) {
-                        files = [NSMutableString stringWithFormat:@"%@%@", files, add];
-                    } else {
-                        files = (NSMutableString *)[NSString stringWithString:add];
-                    }
-                }
-            }
-        }
-    }
-    return files;
-}
 
-+ (NSString *)createHTMLwithContent:(NSString *)htmlContent withAppDep:(NSArray *)appDep withPageDep:(NSArray *)pageDep
-{
-    NSString *html;
-    if (htmlContent) {
-        NSMutableString *add;
-        if (appDep && pageDep) {
-            add = [NSMutableString stringWithFormat:@"%@%@", [AppDelegate addFiles:appDep], [AppDelegate addFiles:pageDep]];
-        }
-        else {
-            add = [NSMutableString stringWithString:@""];
-        }
-        html = [NSString stringWithFormat:@"<!DOCTYPE>"
-                "<html>"
-                "<head>"
-                "%@"
-                "</head>"
-                "<body>"
-                "<div id='Main' style='padding:10px;'>"
-                "%@"
-                "</body>"
-                "</head>"
-                "</html>"
-                , add, htmlContent];
-        
-    }
-    
-    return html;
-}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

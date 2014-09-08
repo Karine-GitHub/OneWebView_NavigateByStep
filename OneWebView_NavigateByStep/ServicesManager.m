@@ -45,33 +45,27 @@
 
 - (void) viewDidDisappear:(BOOL)animated
 {
-    for (UITableViewCell *cell in self.tableView.visibleCells) {
-        for (UIView *view in cell.subviews) {
-            if ([view isKindOfClass:[UIButton class]]) {
-                
-            }
+    int nbSwitchOn = 0;
+    int nbSwitchOff = 0;
+    for (UITableViewCellWithSwitch *cell in self.tableView.visibleCells) {
+        
+        NSLog(@"[viewDisapear] Status for %@ = %hhd", cell.title.text, cell.status.isOn);
+        
+        if (cell.status.isOn) {
+            nbSwitchOn++;
+            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:cell.title.text]];
+        } else {
+            nbSwitchOff++;
+            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:cell.title.text]];
         }
     }
-    
-    //[[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.refreshDuration forKey:@"durationChoice"]];
+    NSLog(@"Nb Cells = 7. On = %d, Off = %d", nbSwitchOn, nbSwitchOff);
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-}
-
-- (void)clickCheckBox:(id)sender {
-    if (!self.isChecked) {
-        [sender setImage:[UIImage imageNamed:@"checkBoxMarked.png"] forState:UIControlStateNormal];
-        self.isChecked = YES;
-    }
-    
-    else if (self.isChecked) {
-        [sender setImage:[UIImage imageNamed:@"checkBox.png"] forState:UIControlStateNormal];
-        self.isChecked = NO;
-    }
 }
 
 #pragma mark - Table view data source
@@ -88,35 +82,22 @@
     return self.appMenu.count;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
-    
-    UIImage *lock = [UIImage imageNamed:@"20-gear2.png"];
-    UIImageView *imgView = [[UIImageView alloc] initWithImage:lock];
-    imgView.frame = CGRectMake(cell.frame.size.width - 90, 20 * indexPath.row/2, 26, 28);
-    [cell addSubview:imgView];
-    
-    UIButton *checkBox = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    [checkBox setFrame:CGRectMake(cell.frame.size.width - 40, 20 * indexPath.row/2, 25, 25)];
-    [checkBox setTag:indexPath.row];
-    //[checkBox setBackgroundColor: UIColor.grayColor];
-    //[checkBox setTintColor:UIColor.clearColor];
-    checkBox.opaque = NO;
-    [checkBox setImage:[UIImage imageNamed:@"checkBoxMarked.png"] forState:UIControlStateNormal];
-    [checkBox addTarget:self action:@selector(clickCheckBox:) forControlEvents:UIControlEventTouchUpInside];
-    [cell addSubview:checkBox];
-    
-    //NSArray *arr = cell.subviews;
+    UITableViewCellWithSwitch *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
     
     self.itemMenu = self.appMenu[indexPath.row];
     
-    if ([[self.itemMenu  objectForKey:@"Title"] isKindOfClass:[NSNull class]]) {
-        cell.textLabel.text = @"No Name property";
+    if ([[self.itemMenu objectForKey:@"Title"] isKindOfClass:[NSNull class]]) {
+        cell.title.text = @"No Name property";
     } else {
-        cell.textLabel.text = [[self.itemMenu  objectForKey:@"Title"] description];
+        cell.title.text = [[self.itemMenu objectForKey:@"Title"] description];
     }
+    
+    NSDictionary *dico = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    [cell.status setOn:[AppDelegate serviceStatusFor:cell.title.text]];
+    NSLog(@"[willDisplay] Status for %@ = %hhd", cell.title.text, cell.status.isOn);
+    
     return cell;
 }
 
@@ -141,6 +122,11 @@
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
     
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+
 }
 
 /*

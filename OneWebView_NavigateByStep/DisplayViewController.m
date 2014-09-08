@@ -247,7 +247,7 @@
                     @throw e;
                 }
                 self.viewInfo = [NSString stringWithFormat:@"%@?%@", self.NavigateTo, self.PageID];
-
+                
                 // Load HTML
                 [self.Display loadHTMLString:content baseURL:url];
                 
@@ -306,13 +306,13 @@
     
     self.whereWasI = self.navigationItem.title;
     
-    NSLog(@"URL : %@", request.URL);
+    /*NSLog(@"URL : %@", request.URL);
     NSLog(@"Host : %@", [request.URL host]);
     NSLog(@"Query : %@", [request.URL query]);
     NSLog(@"Relative path : %@", [request.URL relativePath]);
     NSLog(@"Navigation type : %d", navigationType);
     
-    NSArray *pathComponent = [request.URL pathComponents];
+    NSArray *pathComponent = [request.URL pathComponents];*/
 
     if ([[request.URL relativePath] isEqualToString:path]) {
         // First loading

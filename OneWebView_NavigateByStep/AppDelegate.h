@@ -46,6 +46,7 @@ extern BOOL roamingIsEnabled;
 - (void) configureApp;
 - (BOOL) testConnection;
 - (BOOL) testFastConnection;
++ (BOOL) serviceStatusFor:(NSString *)statusName;
 + (NSNumber *) getSizeOf:(NSString *)path;
 + (NSMutableString *) addFiles:(NSArray *)dependencies;
 + (NSString *)createHTMLwithContent:(NSString *)htmlContent withAppDep:(NSArray *)appDep withPageDep:(NSArray *)pageDep;
