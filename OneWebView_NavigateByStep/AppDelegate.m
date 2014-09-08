@@ -9,7 +9,6 @@
 #import "AppDelegate.h"
 
 NSDictionary *APPLICATION_FILE;
-NSMutableArray *NAVIGATION_STACK;
 NSString *APPLICATION_SUPPORT_PATH;
 BOOL autoRefresh;
 BOOL forceDownloading;
@@ -92,8 +91,8 @@ BOOL roamingIsEnabled;
     NSString *carrierPlistPath = [fm destinationOfSymbolicLinkAtPath:carrierPlist error:&err];
     NSString *operatorPlistPath = [fm destinationOfSymbolicLinkAtPath:operatorPlist error:&err];
     
-    int carrier = [carrierPlistPath rangeOfString:@"Carrier"].location;
-    int operator = [operatorPlistPath rangeOfString:@"Carrier"].location;
+    long carrier = [carrierPlistPath rangeOfString:@"Carrier"].location;
+    long operator = [operatorPlistPath rangeOfString:@"Carrier"].location;
     carrierPlistPath = [carrierPlistPath substringFromIndex:carrier];
     operatorPlistPath = [operatorPlistPath substringFromIndex:operator];
     

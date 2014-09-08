@@ -59,7 +59,7 @@
             self.durationChoice = [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"];
         }
 
-        int iDuration = [self.durationValues indexOfObject:self.durationChoice];
+        long iDuration = [self.durationValues indexOfObject:self.durationChoice];
         
         [self.refresh selectRow:[self.intervalChoice integerValue]-1 inComponent:0 animated:YES];
         [self.refresh selectRow:iDuration inComponent:1 animated:YES];

@@ -66,8 +66,8 @@
                     <connections>
                         <outlet property="Activity" destination="vlO-MZ-CXo" id="DoS-RY-0G5"/>
                         <outlet property="Display" destination="UND-tu-cLY" id="uYe-Yh-vdu"/>
+                        <outlet property="Img" destination="DyL-nI-ylO" id="qOx-ss-4Fh"/>
                         <outlet property="Settings" destination="p6R-64-Ew0" id="YsD-5S-k0s"/>
-                        <outlet property="img" destination="DyL-nI-ylO" id="cSd-1z-VZY"/>
                         <outlet property="searchDisplayController" destination="oNV-Sd-lOA" id="ne3-1l-V7a"/>
                     </connections>
                 </viewController>

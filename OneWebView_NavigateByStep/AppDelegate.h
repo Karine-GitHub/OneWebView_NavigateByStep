@@ -13,15 +13,12 @@
 
 // GLOBAL VARIABLES json files
 extern NSDictionary *APPLICATION_FILE;
-extern NSMutableArray *NAVIGATION_STACK;
-// END GLOBAL VARIABLES
-
 extern NSString *APPLICATION_SUPPORT_PATH;
 extern BOOL forceDownloading;
 extern BOOL reloadApp;
 extern BOOL cacheIsEnabled;
 extern BOOL roamingIsEnabled;
-
+// END GLOBAL VARIABLES
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

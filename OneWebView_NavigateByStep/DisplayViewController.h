@@ -12,20 +12,20 @@
 
 @property (weak, nonatomic) IBOutlet UIWebView *Display;
 @property (weak, nonatomic) IBOutlet UIButton *Settings;
-@property (strong, nonatomic) IBOutlet UIImageView *img;
+@property (strong, nonatomic) IBOutlet UIImageView *Img;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *Activity;
 
 @property id PageID;
-@property id navigateTo;
+@property id NavigateTo;
 
-@property int webviewI;
-@property int imageI;
+@property long webviewI;
+@property long imageI;
 
-@property (strong, nonatomic) UIAlertView *settingsDone;
-@property (strong, nonatomic) UIActivityViewController *shareActivity;
+@property (strong, nonatomic) UIAlertView *SettingsDone;
+@property (strong, nonatomic) UIActivityViewController *ShareActivity;
 
 @property (strong,nonatomic) NSString *whereWasI;
-@property (strong, nonatomic) NSString *lastPath;
+@property NSString *viewInfo;
 
 @property BOOL isConflictual;
 @property NSTimer *backgroundTimer;

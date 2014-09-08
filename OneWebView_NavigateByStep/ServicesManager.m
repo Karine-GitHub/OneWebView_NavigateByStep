@@ -38,7 +38,7 @@
                 [self.tableView insertRowsAtIndexPaths:@[indexPathTable] withRowAnimation:UITableViewRowAnimationAutomatic];
             }
         }
-        NSLog(@"Dico : %d, Nb d'item dans le menu : %d", self.appMenu.count, self.nbMenuItem);
+        NSLog(@"Dico : %lu, Nb d'item dans le menu : %d", (unsigned long)self.appMenu.count, self.nbMenuItem);
         self.navigationItem.title = @"Mes services";
     }
 }
@@ -108,7 +108,7 @@
     [checkBox addTarget:self action:@selector(clickCheckBox:) forControlEvents:UIControlEventTouchUpInside];
     [cell addSubview:checkBox];
     
-    NSArray *arr = cell.subviews;
+    //NSArray *arr = cell.subviews;
     
     self.itemMenu = self.appMenu[indexPath.row];
     
