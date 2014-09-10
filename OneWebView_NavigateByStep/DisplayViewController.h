@@ -11,9 +11,9 @@
 @interface DisplayViewController : UIViewController <UIAlertViewDelegate, UITextViewDelegate, UISplitViewControllerDelegate, UIWebViewDelegate, UITabBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *Display;
-@property (weak, nonatomic) IBOutlet UIButton *Settings;
 @property (strong, nonatomic) IBOutlet UIImageView *Img;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *Activity;
+@property (strong, nonatomic) IBOutlet MKMapView *mapView;
 
 @property id PageID;
 @property id NavigateTo;
@@ -29,5 +29,16 @@
 
 @property BOOL isConflictual;
 @property NSTimer *backgroundTimer;
+
+- (void)reloadApp;
+- (void)initApp;
+- (void)configureViewWithStep:(NSString *)goTo;
+
+- (void) refreshApplicationByNewDownloading;
+- (void) forceDownloadingApplication:(NSTimer *)timer;
+
+- (void)configureAppDone:(NSNotification *)notification;
+- (void)conflictIssue:(NSNotification *)notification;
+- (void)settingsDone:(NSNotification *)notification;
 
 @end

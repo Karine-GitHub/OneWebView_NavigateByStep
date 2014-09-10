@@ -15,4 +15,7 @@
     #import <Foundation/Foundation.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <EventKit/EventKit.h>
+#import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
+#import <AddressBookUI/AddressBookUI.h>
 #endif

@@ -7,6 +7,7 @@
 //
 #import "AppDelegate.h"
 #import "DisplayViewController.h"
+#import "DynamicToolBar.h"
 
 @interface DisplayViewController ()
 
@@ -90,8 +91,6 @@
                 } @finally {
                     reloadApp = NO;
                     forceDownloading = NO;
-                    //[self webViewDidFinishLoad:self.Display];
-                    //[self viewDidLoad];
                 }
             }
         }
@@ -168,7 +167,7 @@
     }
 }
 
-- (void) initApp
+- (void)initApp
 {
     // Get Application json file
     @try {
@@ -231,6 +230,7 @@
                             ([[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"] && !goTo && !self.PageID)) {
                     content = [AppDelegate createHTMLwithContent:[step objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
                     path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [step objectForKey:@"Name"]];
+                    [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[step objectForKey:@"ToolBarOptions"]]];
                     break;
                 }
             }
@@ -250,7 +250,9 @@
                 
                 // Load HTML
                 [self.Display loadHTMLString:content baseURL:url];
-                
+                NSString *js = @"function getShareData(){return \"123\";} getShareData()";
+                NSString *obj = [self.Display stringByEvaluatingJavaScriptFromString:js];
+
                 // Set Page's title
                 self.navigationItem.title = [page objectForKey:@"Title"];
             }
@@ -346,6 +348,10 @@
         // HTML back button => simulate back button click in navigation bar
         [[self navigationController] popViewControllerAnimated:YES];
         return NO;
+    } else if ([[request.URL host] isEqualToString:@"backtostep"]) {
+        // HTML back button => simulate back button click in navigation bar
+        [[self navigationController] popViewControllerAnimated:YES];
+        return NO;
     } else if (![request.URL relativePath] && ![request.URL query] && !self.PageID) {
         return YES;
     }
@@ -386,39 +392,6 @@
     }
 }
 
-/*
-        case shareItemTag : {
-            NSDictionary *dico = [self.Display.request allHTTPHeaderFields];
-            NSData *data = [self.Display.request HTTPBody];
-            UIImage *shareImage = [UIImage imageNamed:@""];
-            NSString *shareMessage = @"";
-            NSURL *shareUrl = [self.Display.request URL];
-            NSArray *shareArray = [NSArray arrayWithObjects:shareMessage, shareImage, shareUrl, nil];
-            self.shareActivity = [[UIActivityViewController alloc] initWithActivityItems:shareArray applicationActivities:nil];
-            self.shareActivity.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
-            [self presentViewController:self.shareActivity animated:YES completion:nil];
-        }
-        case calendarItemTag : {
-            [CalendarTools requestAccess:^(BOOL granted, NSError *error) {
-                if (granted) {
-                    NSDate *myDate = [NSDate dateWithTimeIntervalSinceNow:86400]; // 1 jour
-                    BOOL result = [CalendarTools addEventAt:myDate withTitle:@"My new RDV" inLocation:@"Luxembourg"];
-                    if (result) {
-                        NSLog(@"RDV Ajouté");
-                    } else {
-                        NSLog(@"RDV pas ajouté");
-                    }
-                } else {
-                    // Permission denied
-                }
-                }];
-        }
-            break;
-        default:
-            break;
-    }
-} */
-
 // Do not change the date if just the refresh variable has changed
 - (void) refreshApplicationByNewDownloading
 {
@@ -456,13 +429,6 @@
             }
         }
     }
-}
-
-- (IBAction)SettingsClick:(id)sender
-{
-    /*if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        [self.navigationController pushViewController:[self.storyboard instantiateViewControllerWithIdentifier:@"settingsView"] animated:YES];
-    }*/
 }
 
 @end

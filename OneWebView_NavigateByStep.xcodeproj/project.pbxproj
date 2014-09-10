@@ -34,6 +34,10 @@
 		84BB2D3F19B887130073A8FE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D3E19B887130073A8FE /* SystemConfiguration.framework */; };
 		84BB2D4119B8871F0073A8FE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */; };
 		84ECF0F819BDF9140088BC40 /* UITableViewCellWithSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */; };
+		84ECF0FE19BEDD380088BC40 /* DynamicToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 84ECF0FD19BEDD380088BC40 /* DynamicToolBar.m */; };
+		84ECF10019BF3A300088BC40 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF0FF19BF3A300088BC40 /* MapKit.framework */; };
+		84ECF10219BF3C040088BC40 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10119BF3C040088BC40 /* CoreLocation.framework */; };
+		84ECF10419BF3C0F0088BC40 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +88,11 @@
 		84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		84ECF0F319BDE2A70088BC40 /* UITableViewCellWithSwitch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UITableViewCellWithSwitch.h; sourceTree = "<group>"; };
 		84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UITableViewCellWithSwitch.m; sourceTree = "<group>"; };
+		84ECF0FC19BEDD380088BC40 /* DynamicToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DynamicToolBar.h; sourceTree = "<group>"; };
+		84ECF0FD19BEDD380088BC40 /* DynamicToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DynamicToolBar.m; sourceTree = "<group>"; };
+		84ECF0FF19BF3A300088BC40 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		84ECF10119BF3C040088BC40 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,8 +100,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84ECF10419BF3C0F0088BC40 /* AddressBookUI.framework in Frameworks */,
+				84ECF10219BF3C040088BC40 /* CoreLocation.framework in Frameworks */,
 				84BB2D4119B8871F0073A8FE /* CoreTelephony.framework in Frameworks */,
 				84BB2D3F19B887130073A8FE /* SystemConfiguration.framework in Frameworks */,
+				84ECF10019BF3A300088BC40 /* MapKit.framework in Frameworks */,
 				84BB2D3D19B887090073A8FE /* MessageUI.framework in Frameworks */,
 				84BB2D3B19B886F90073A8FE /* EventKit.framework in Frameworks */,
 				84BB2CEE19B885FC0073A8FE /* CoreGraphics.framework in Frameworks */,
@@ -136,6 +148,9 @@
 		84BB2CEA19B885FC0073A8FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */,
+				84ECF10119BF3C040088BC40 /* CoreLocation.framework */,
+				84ECF0FF19BF3A300088BC40 /* MapKit.framework */,
 				84BB2D4019B8871F0073A8FE /* CoreTelephony.framework */,
 				84BB2D3E19B887130073A8FE /* SystemConfiguration.framework */,
 				84BB2D3C19B887090073A8FE /* MessageUI.framework */,
@@ -151,16 +166,12 @@
 		84BB2CF119B885FC0073A8FE /* OneWebView_NavigateByStep */ = {
 			isa = PBXGroup;
 			children = (
-				84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */,
 				84BB2D3719B886BA0073A8FE /* SettingsView.h */,
 				84BB2D3819B886BA0073A8FE /* SettingsView.m */,
 				84BB2D3119B886920073A8FE /* RefreshSettingViewController.h */,
 				84BB2D3219B886930073A8FE /* RefreshSettingViewController.m */,
 				84BB2D3319B886930073A8FE /* ServicesManager.h */,
 				84BB2D3419B886930073A8FE /* ServicesManager.m */,
-				84BB2D2219B886840073A8FE /* 20-gear2.png */,
-				84BB2D2319B886840073A8FE /* en.lproj */,
-				84BB2D2619B886840073A8FE /* Images.xcassets */,
 				84BB2D2719B886840073A8FE /* Main_iPad.storyboard */,
 				84BB2D2819B886840073A8FE /* Main_iPhone.storyboard */,
 				84BB2D2919B886840073A8FE /* Reachability.h */,
@@ -170,8 +181,14 @@
 				84BB2D1C19B886750073A8FE /* Configuration.plist */,
 				84BB2D1D19B886750073A8FE /* DisplayViewController.h */,
 				84BB2D1E19B886750073A8FE /* DisplayViewController.m */,
-				84BB2CF219B885FD0073A8FE /* Supporting Files */,
 				84ECF0F319BDE2A70088BC40 /* UITableViewCellWithSwitch.h */,
+				84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */,
+				84BB2D2219B886840073A8FE /* 20-gear2.png */,
+				84BB2D2619B886840073A8FE /* Images.xcassets */,
+				84BB2D2319B886840073A8FE /* en.lproj */,
+				84BB2CF219B885FD0073A8FE /* Supporting Files */,
+				84ECF0FC19BEDD380088BC40 /* DynamicToolBar.h */,
+				84ECF0FD19BEDD380088BC40 /* DynamicToolBar.m */,
 			);
 			path = OneWebView_NavigateByStep;
 			sourceTree = "<group>";
@@ -262,6 +279,11 @@
 				TargetAttributes = {
 					84BB2CE719B885FC0073A8FE = {
 						DevelopmentTeam = 3BZ9RQY6AQ;
+						SystemCapabilities = {
+							com.apple.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					84BB2D0219B885FD0073A8FE = {
 						TestTargetID = 84BB2CE719B885FC0073A8FE;
@@ -317,6 +339,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84BB2D1F19B886750073A8FE /* AppDelegate.m in Sources */,
+				84ECF0FE19BEDD380088BC40 /* DynamicToolBar.m in Sources */,
 				84BB2D2119B886750073A8FE /* DisplayViewController.m in Sources */,
 				84BB2D3019B886840073A8FE /* Reachability.m in Sources */,
 				84BB2D3519B886930073A8FE /* RefreshSettingViewController.m in Sources */,
