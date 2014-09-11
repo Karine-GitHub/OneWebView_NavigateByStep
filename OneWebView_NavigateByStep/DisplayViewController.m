@@ -81,13 +81,13 @@
         {
             if (appDel.downloadIsFinished) {
                 @try {
-                    [NSThread sleepForTimeInterval:3.0];
-                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    self.navigationItem.title = self.whereWasI;
-                    // Alert user that downloading is finished
-                    errorMsg = [NSString stringWithFormat:@"The new settings is now supported. The reconfiguration of the Application is done."];
-                    self.SettingsDone = [[UIAlertView alloc] initWithTitle:@"Reconfiguration Successful" message:errorMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                    [self.SettingsDone performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+                        [NSThread sleepForTimeInterval:3.0];
+                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                        self.navigationItem.title = self.whereWasI;
+                        // Alert user that downloading is finished
+                        errorMsg = [NSString stringWithFormat:@"The new settings is now supported. The reconfiguration of the Application is done."];
+                        self.SettingsDone = [[UIAlertView alloc] initWithTitle:@"Reconfiguration Successful" message:errorMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                        [self.SettingsDone performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
                 } @finally {
                     reloadApp = NO;
                     forceDownloading = NO;
@@ -250,8 +250,6 @@
                 
                 // Load HTML
                 [self.Display loadHTMLString:content baseURL:url];
-                NSString *js = @"function getShareData(){return \"123\";} getShareData()";
-                NSString *obj = [self.Display stringByEvaluatingJavaScriptFromString:js];
 
                 // Set Page's title
                 self.navigationItem.title = [page objectForKey:@"Title"];
@@ -312,10 +310,8 @@
     NSLog(@"Host : %@", [request.URL host]);
     NSLog(@"Query : %@", [request.URL query]);
     NSLog(@"Relative path : %@", [request.URL relativePath]);
-    NSLog(@"Navigation type : %d", navigationType);
+    NSLog(@"Navigation type : %d", navigationType);*/
     
-    NSArray *pathComponent = [request.URL pathComponents];*/
-
     if ([[request.URL relativePath] isEqualToString:path]) {
         // First loading
         return YES;

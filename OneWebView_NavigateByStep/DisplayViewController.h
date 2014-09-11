@@ -13,7 +13,6 @@
 @property (weak, nonatomic) IBOutlet UIWebView *Display;
 @property (strong, nonatomic) IBOutlet UIImageView *Img;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *Activity;
-@property (strong, nonatomic) IBOutlet MKMapView *mapView;
 
 @property id PageID;
 @property id NavigateTo;
@@ -25,7 +24,7 @@
 @property (strong, nonatomic) UIActivityViewController *ShareActivity;
 
 @property (strong,nonatomic) NSString *whereWasI;
-@property NSString *viewInfo;
+@property (strong,nonatomic) NSString *viewInfo; 
 
 @property BOOL isConflictual;
 @property NSTimer *backgroundTimer;

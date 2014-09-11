@@ -11,6 +11,7 @@
 NSDictionary *APPLICATION_FILE;
 NSString *APPLICATION_SUPPORT_PATH;
 BOOL autoRefresh;
+BOOL refreshByToolbar;
 BOOL forceDownloading;
 BOOL reloadApp;
 BOOL cacheIsEnabled;
@@ -227,7 +228,7 @@ BOOL roamingIsEnabled;
                     // Several directories
                     NSString *firstDir = [dirName substringToIndex:getDir.location];
                     NSString *sndDir = [dirName substringFromIndex:getDir.location];
-                    if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, firstDir] isDirectory:&isDirectory] || forceDownloading || autoRefresh) {
+                    if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, firstDir] isDirectory:&isDirectory] || forceDownloading || autoRefresh || refreshByToolbar) {
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, firstDir] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
                             NSLog(@"An error occured during the Creation of Template folder : %@", error);
@@ -237,7 +238,7 @@ BOOL roamingIsEnabled;
                             NSLog(@"An error occured during the Creation of Template folder : %@", error);
                         }
 
-                    } else if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] isDirectory:&isDirectory] || forceDownloading || autoRefresh) {
+                    } else if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] isDirectory:&isDirectory] || forceDownloading || autoRefresh || refreshByToolbar) {
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
                             NSLog(@"An error occured during the Creation of Template folder : %@", error);
@@ -247,7 +248,7 @@ BOOL roamingIsEnabled;
                 } else {
                     // Only one directory
                     path = [NSString stringWithFormat:@"%@%@/%@", APPLICATION_SUPPORT_PATH, dirName, fileName];
-                    if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, dirName] isDirectory:&isDirectory] || forceDownloading || autoRefresh) {
+                    if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, dirName] isDirectory:&isDirectory] || forceDownloading || autoRefresh || refreshByToolbar) {
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, dirName] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
                             NSLog(@"An error occured during the Creation of Template folder : %@", error);
@@ -257,7 +258,7 @@ BOOL roamingIsEnabled;
             }
             // Download file if necessary
             NSURL *location = [NSURL URLWithString:url];
-            if (![fileManager fileExistsAtPath:path] || forceDownloading || autoRefresh) {
+            if (![fileManager fileExistsAtPath:path] || forceDownloading || autoRefresh || refreshByToolbar) {
                 if (!cacheIsEnabled) {
                     // Check if user is currently in Roaming Case
                     if (self.roamingSituation) {
@@ -420,7 +421,7 @@ BOOL roamingIsEnabled;
             NSURL *url = [NSURL URLWithString:webApi];
             
             NSString *path = [NSString stringWithFormat:@"%@%@.json", APPLICATION_SUPPORT_PATH, [config objectForKey:@"ApplicationID"]];
-            if (![fileManager fileExistsAtPath:path] || forceDownloading || autoRefresh) {
+            if (![fileManager fileExistsAtPath:path] || forceDownloading || autoRefresh || refreshByToolbar) {
                 NSLog(@"File does not exist or self.forceDownloading is true");
                 // Check Connection if cache is not enabled
                 if (!cacheIsEnabled) {
@@ -507,6 +508,7 @@ BOOL roamingIsEnabled;
                 }
             }
             self.downloadIsFinished = YES;
+            refreshByToolbar = NO;
         }
         if (reloadApp || forceDownloading) {
             NSNotification * notif = [NSNotification notificationWithName:@"ConfigureAppNotification" object:self];
@@ -519,13 +521,6 @@ BOOL roamingIsEnabled;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
-    /*if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-        UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
-        UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
-        splitViewController.delegate = (id)navigationController.topViewController;
-    }*/
-    
     [self configureApp];
     
     return YES;

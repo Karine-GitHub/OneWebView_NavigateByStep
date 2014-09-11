@@ -16,6 +16,7 @@ extern NSDictionary *APPLICATION_FILE;
 extern NSString *APPLICATION_SUPPORT_PATH;
 extern BOOL forceDownloading;
 extern BOOL reloadApp;
+extern BOOL refreshByToolbar;
 extern BOOL cacheIsEnabled;
 extern BOOL roamingIsEnabled;
 // END GLOBAL VARIABLES

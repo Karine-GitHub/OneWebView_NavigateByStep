@@ -45,10 +45,6 @@
                                 <rect key="frame" x="150" y="203" width="37" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </activityIndicatorView>
-                            <mapView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tSA-qV-gV2">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="392"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                            </mapView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -60,7 +56,6 @@
                         <outlet property="Activity" destination="vlO-MZ-CXo" id="DoS-RY-0G5"/>
                         <outlet property="Display" destination="UND-tu-cLY" id="uYe-Yh-vdu"/>
                         <outlet property="Img" destination="DyL-nI-ylO" id="qOx-ss-4Fh"/>
-                        <outlet property="mapView" destination="tSA-qV-gV2" id="giG-N1-kx9"/>
                         <outlet property="searchDisplayController" destination="oNV-Sd-lOA" id="ne3-1l-V7a"/>
                     </connections>
                 </viewController>

@@ -105,15 +105,18 @@
 + (void) dataRefreshClick:(id)sender
 {
     AppDelegate *appDel = [[AppDelegate alloc] init];
-    forceDownloading = YES;
+    DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
+    
+    refreshByToolbar = YES;
     [appDel performSelectorInBackground:@selector(configureApp) withObject:appDel];
     
-    DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
     [controller initApp];
 }
 
 + (void) searchClick:(id)sender
-{}
+{
+    
+}
 
 + (void) filterClick:(id)sender
 {}
@@ -121,19 +124,10 @@
 + (void) shareClick:(id)sender
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
-    /* Fonctionne : NSString *js = @"function getShareData(){return \"bla\";} getShareData()";
-    /NSString *obj = [controller.Display stringByEvaluatingJavaScriptFromString:js"]; */
     
-    /* Fonctionne NSString *js_json = @"function getData() {  var json = null; $.getJSON('http://headers.jsontest.com').done(function( data ) { alert(data); alert(JSON.stringify(data));});} getData()";
-    [controller.Display stringByEvaluatingJavaScriptFromString:js_json]; */
-    
-    //String empty => NSString *js_json2 = @"function getData() { var json = $.getJSON('http://headers.jsontest.com').done(function( data ) { json = JSON.stringify(data); return String(json);}); } getData()";
-    
-    
-    NSString *js_json2 = @"function getData() { var json; $.ajax({url: 'http://headers.jsontest.com',dataType: 'json',async: false,success: function(data) {json = JSON.stringify(data);return json;}});return json;}; getData()";
-    NSString *obj = [controller.Display stringByEvaluatingJavaScriptFromString:js_json2];
-    NSData *data = [obj dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *json = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+    NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getShareData()"];
+    NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
 
     NSData *imgFile = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://www.zimagez.com/avatar/img7812.jpg"]];
     UIImage *shareImage = [UIImage imageWithData:imgFile];
@@ -150,13 +144,12 @@
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
     
-    NSString *js = @"function getGeolocalisationData(){return \"6.12820?49.60410\";} getGeolocalisationData()";
-
-    NSString *obj = [controller.Display stringByEvaluatingJavaScriptFromString:js];
+    NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getGeolocalisationData()"];
+    NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
     
-    NSRange separator = [obj rangeOfString:@"?"];
-    NSString *longitude = [obj substringToIndex:separator.location];
-    NSString *lattitude = [obj substringFromIndex:separator.location +1];
+    NSString *longitude = [jsonResult objectForKey:@"Longitude"];
+    NSString *lattitude = [jsonResult objectForKey:@"Lattitude"];
     
     /* Fonctionne mais pas d'annotation sur la carte
     NSURL*request = [NSURL URLWithString:[NSString stringWithFormat:@"http://maps.apple.com/?ll=%@,%@", lattitude, longitude]];
@@ -213,13 +206,17 @@
 + (void) contactClick:(id)sender
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
-    NSObject *obj = [controller.Display stringByEvaluatingJavaScriptFromString:@"getAddContactData()"];
+    NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getAddContactData()"];
+    NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
 }
 
 + (void) calendarClick:(id)sender
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
-    NSObject *obj = [controller.Display stringByEvaluatingJavaScriptFromString:@"getAddCalendarData()"];
+    NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getAddCalendarData()"];
+    NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
 
     EKEventStore *store = [[EKEventStore alloc] init];
     EKEvent *event = [EKEvent eventWithEventStore:store];
