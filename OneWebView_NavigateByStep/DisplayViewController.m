@@ -40,7 +40,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"SettingsModificationNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"NoModificationNotification" object:nil];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(conflictIssue:) name:@"ConflictualSituationNotification" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configureAppDone:) name:@"ConfigureAppNotification" object:nil];
 }
@@ -50,6 +50,7 @@
     [super viewWillDisappear:YES];
     self.isConflictual = NO;
 }
+
 #pragma mark NOTIFICATIONS
 - (void)settingsDone:(NSNotification *)notification
 {
@@ -81,13 +82,13 @@
         {
             if (appDel.downloadIsFinished) {
                 @try {
-                        [NSThread sleepForTimeInterval:3.0];
-                        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                        self.navigationItem.title = self.whereWasI;
-                        // Alert user that downloading is finished
-                        errorMsg = [NSString stringWithFormat:@"The new settings is now supported. The reconfiguration of the Application is done."];
-                        self.SettingsDone = [[UIAlertView alloc] initWithTitle:@"Reconfiguration Successful" message:errorMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-                        [self.SettingsDone performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+                    [NSThread sleepForTimeInterval:3.0];
+                    [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+                    self.navigationItem.title = self.whereWasI;
+                    // Alert user that downloading is finished
+                    errorMsg = [NSString stringWithFormat:@"The new settings is now supported. The reconfiguration of the Application is done."];
+                    self.SettingsDone = [[UIAlertView alloc] initWithTitle:@"Reconfiguration Successful" message:errorMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                    [self.SettingsDone performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
                 } @finally {
                     reloadApp = NO;
                     forceDownloading = NO;
@@ -96,7 +97,6 @@
         }
     }
 }
-
 #pragma mark END OF NOTIFICATIONS
 
 
@@ -126,26 +126,27 @@
         
         // Do any additional setup after loading the view, typically from a nib.
         appDel = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-
+        
         self.Display.delegate = self;
         
         if ([self.navigationItem.title isEqualToString:@"Menu"] || (!self.NavigateTo && !self.PageID)) {
             self.navigationItem.hidesBackButton = YES;
+            self.navigationItem.rightBarButtonItem = nil;
         } else {
             self.navigationItem.hidesBackButton = NO;
+            UIImage *backToMenuIcon = [[UIImage imageNamed:@"BackButtonHome-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+            UIBarButtonItem *backMenuIcon = [[UIBarButtonItem alloc] initWithImage:backToMenuIcon style:UIBarButtonItemStyleBordered target:self action:@selector(clickBackMenuIcon:)];
+            [self.navigationItem setRightBarButtonItem:backMenuIcon];
         }
         self.navigationItem.title = self.whereWasI;
-
+        
         [self.Img setImage:[UIImage imageNamed:@"LaunchImage-700"]];
         
-        for (UIView *v in [self.view subviews]) {
-            if ([v isKindOfClass:[UIWebView class]]) {
-                self.webviewI = [[self.view subviews] indexOfObject:v];
-            } else if ([v isKindOfClass:[UIImage class]]) {
-                self.imageI = [[self.view subviews] indexOfObject:v];
-            }
-        }
-
+        /*CGRect screenBound = [[UIScreen mainScreen] bounds];
+        // 46 -> toolbar
+        [self.Display setFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height - 70)];
+        [self.Img setFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height - 70)];*/
+        
         [self performSelectorInBackground:@selector(refreshApplicationByNewDownloading) withObject:self];
         
         if (self.isConflictual) {
@@ -163,7 +164,7 @@
             self.Display.hidden = NO;
         }
         
-    [self initApp];
+        [self initApp];
     }
 }
 
@@ -185,9 +186,9 @@
             UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Application fails" message:nil delegate:self cancelButtonTitle:@"Quit" otherButtonTitles:nil];
             if (appDel.isDownloadedByNetwork || appDel.isDownloadedByFile) {
                 if (APPLICATION_FILE != Nil) {
-                appDependencies = [APPLICATION_FILE objectForKey:@"Dependencies"];
-                allPages = [APPLICATION_FILE objectForKey:@"Pages"];
-                [self configureViewWithStep:self.NavigateTo];
+                    appDependencies = [APPLICATION_FILE objectForKey:@"Dependencies"];
+                    allPages = [APPLICATION_FILE objectForKey:@"Pages"];
+                    [self configureViewWithPageID:self.PageID withStepName:self.NavigateTo withFeedId:self.FeedID];
                 }
             } else if (!appDel.isDownloadedByNetwork) {
                 alertNoConnection.message = @"Impossible to download content on the server. The network connection is too low or off. The application will shut down. Please try later.";
@@ -205,55 +206,104 @@
     }
 }
 
-- (void)configureViewWithStep:(NSString *)goTo
+- (void)configureViewWithPageID:(NSString *)pageId withStepName:(NSString *)stepName withFeedId:(NSString *)feedId
 {
     @try {
+        NSURL *url = [NSURL fileURLWithPath:APPLICATION_SUPPORT_PATH isDirectory:YES];
+        NSString *content = nil;
+        NSString *path = nil;
+        NSString *externalUrl = nil;
+        
         for (NSMutableDictionary *page in allPages) {
-            // Get Page's Dependencies
-            if ([page objectForKey:@"Dependencies"] != [NSNull null]) {
-                pageDependencies = [page objectForKey:@"Dependencies"];
-            }
-            // Get Page's Steps
-            if ([page objectForKey:@"Steps"] != [NSNull null]) {
-                pageSteps = [page objectForKey:@"Steps"];
-            }
-            
-            NSURL *url = [NSURL fileURLWithPath:APPLICATION_SUPPORT_PATH isDirectory:YES];
-            // Load Content in the WebView
-            
-            NSString *content = nil;
-            NSString *path = nil;
-            
-            for (NSDictionary *step in pageSteps) {
-                if (([goTo isEqualToString:[step objectForKey:@"Name"]]) ||
-                        ([[page objectForKey:@"Id"] isEqual:self.PageID] && !goTo) ||
-                            ([[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"] && !goTo && !self.PageID)) {
-                    content = [AppDelegate createHTMLwithContent:[step objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
-                    path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [step objectForKey:@"Name"]];
-                    [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[step objectForKey:@"ToolBarOptions"]]];
+            if (pageId || [[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
+                // Get Page's Dependencies
+                if ([page objectForKey:@"Dependencies"] != [NSNull null]) {
+                    pageDependencies = [page objectForKey:@"Dependencies"];
+                }
+                // Get Page's Steps
+                if ([page objectForKey:@"Steps"] != [NSNull null]) {
+                    pageSteps = [page objectForKey:@"Steps"];
+                }
+                
+                if (!pageId && !stepName && [[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
+                    if ([[page objectForKey:@"IsExternal"] isEqual:[NSNumber numberWithBool:YES]]) {
+                        externalUrl = [page objectForKey:@"ExternalUrl"];
+                    } else {
+                        NSDictionary *only = [pageSteps objectAtIndex:0];
+                        content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                        path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
+                        
+                        // Set Page's title
+                        self.navigationItem.title = [page objectForKey:@"Title"];
+                        // Set Toolbar
+                        [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[only objectForKey:@"ToolBarOptions"]]];
+                    }
+                } else if ([pageId isEqual:[page objectForKey:@"Id"]] && !stepName && ![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
+                    if ([[page objectForKey:@"IsExternal"] isEqual:[NSNumber numberWithBool:YES]]) {
+                        externalUrl = [page objectForKey:@"ExternalUrl"];
+                    } else {
+                        NSDictionary *only = [pageSteps objectAtIndex:0];
+                        content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                        path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
+                        
+                        // Set Page's title
+                        self.navigationItem.title = [page objectForKey:@"Title"];
+                        // Set Toolbar
+                        [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[only objectForKey:@"ToolBarOptions"]]];
+                    }
+                } else if ([pageId isEqual:[page objectForKey:@"Id"]] && stepName && feedId && ![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
+                    if ([[page objectForKey:@"IsExternal"] isEqual:[NSNumber numberWithBool:YES]]) {
+                        externalUrl = [page objectForKey:@"ExternalUrl"];
+                    } else {
+                        for (NSDictionary *step in pageSteps) {
+                            NSLog(@"Step : %@", [step objectForKey:@"Name"]);
+                            if ([stepName isEqual:[step objectForKey:@"Name"]]) {
+                                content = [AppDelegate createHTMLwithContent:[step objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                                path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [step objectForKey:@"Name"]];
+                                // Set Page's title
+                                self.navigationItem.title = [page objectForKey:@"Title"];
+                                // Set Toolbar
+                                [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[step objectForKey:@"ToolBarOptions"]]];
+                            }
+                        }
+                    }
+                }
+                if ((content && path) || externalUrl) {
                     break;
                 }
             }
-            // Save html content in file
-            if (content && path) {
-                BOOL success = false;
-                NSFileManager *fileManager = [NSFileManager defaultManager];
-                NSError *error = [[NSError alloc] init];
-                NSData *data = [content dataUsingEncoding:NSUTF8StringEncoding];
-                success = [fileManager createFileAtPath:path contents:data attributes:nil];
-                if (!success) {
-                    NSLog(@"An error occured during the Saving of the html file : %@", error);
-                    NSException *e = [NSException exceptionWithName:error.localizedDescription reason:error.localizedFailureReason userInfo:error.userInfo];
-                    @throw e;
-                }
-                self.viewInfo = [NSString stringWithFormat:@"%@?%@", self.NavigateTo, self.PageID];
-                
-                // Load HTML
-                [self.Display loadHTMLString:content baseURL:url];
-
-                // Set Page's title
-                self.navigationItem.title = [page objectForKey:@"Title"];
+        }
+        if (content && path) {
+            // Present html content
+            BOOL success = false;
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *error = [[NSError alloc] init];
+            NSData *data = [content dataUsingEncoding:NSUTF8StringEncoding];
+            success = [fileManager createFileAtPath:path contents:data attributes:nil];
+            if (!success) {
+                NSLog(@"An error occured during the Saving of the html file : %@", error);
+                NSException *e = [NSException exceptionWithName:error.localizedDescription reason:error.localizedFailureReason userInfo:error.userInfo];
+                @throw e;
             }
+            self.viewInfo = [NSString stringWithFormat:@"%@?%@", self.NavigateTo, self.PageID];
+            
+            // Load HTML
+            if (pageId && stepName && feedId) {
+                NSString *urlWithQuery = [NSString stringWithFormat:@"%@?%@#%@", url, stepName, feedId];
+                url = [NSURL URLWithString:urlWithQuery];
+                NSString *result = [self.Display stringByEvaluatingJavaScriptFromString:@"getPageNavigationInfo()"];
+                NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
+                // Set info for stepper
+                self.currentDetailsId = (long)[jsonResult objectForKey:@"currentItemIndex"];
+                self.itemsCount = (long)[jsonResult objectForKey:@"itemCount"];
+                // Set Page's title
+                self.navigationItem.title = [jsonResult objectForKey:@"text"];
+            }
+            [self.Display loadHTMLString:content baseURL:url];
+        } else if (externalUrl) {
+           // Redirect with safari
+           [[UIApplication sharedApplication] openURL:[NSURL URLWithString:externalUrl]];
         }
     }
     @catch (NSException *exception) {
@@ -261,36 +311,35 @@
         UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Application fails" message:errorMsg delegate:self cancelButtonTitle:@"Quit" otherButtonTitles:nil];
         [alertNoConnection show];
     }
-
 }
 
 #pragma mark - Web View
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
-    self.Img.hidden = NO;
-    self.Display.hidden = YES;
-    self.Activity.hidden = NO;
+    //self.Img.hidden = NO;
+    //self.Display.hidden = YES;
+    [self.Activity setHidden:NO];
     [self.Activity startAnimating];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [self.Activity stopAnimating];
-    self.Activity.hidden = YES;
-    self.Img.hidden = YES;
-    self.Display.hidden = NO;
+    [self.Activity setHidden:YES];
+    //self.Img.hidden = YES;
+    //self.Display.hidden = NO;
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
     
-    [UIView beginAnimations:@"animationID" context:nil];
-	[UIView setAnimationDuration:2.0f];
-	[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-	[UIView setAnimationRepeatAutoreverses:NO];
-    [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp forView:self.view cache:YES];
-	[UIView commitAnimations];
+    /*[UIView beginAnimations:@"animationID" context:nil];
+     [UIView setAnimationDuration:2.0f];
+     [UIView setAnimationCurve:UIViewAnimationCurveLinear];
+     [UIView setAnimationRepeatAutoreverses:NO];
+     [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.view cache:YES];
+     [UIView commitAnimations];*/
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-
+    
     //Absolute string : file:///Users/admin/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/FDE30D9E-6C0D-4F1D-96F7-E7B1174A17A2/Library/Application%20Support/details.html
     //Absolute Url : file:///Users/admin/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/FDE30D9E-6C0D-4F1D-96F7-E7B1174A17A2/Library/Application%20Support/details.html
     //Relative string : file:///Users/admin/Library/Application%20Support/iPhone%20Simulator/7.1/Applications/FDE30D9E-6C0D-4F1D-96F7-E7B1174A17A2/Library/Application%20Support/details.html
@@ -299,18 +348,23 @@
     
     // Menu vers actualités : http://goto/?9104542f-9459-4e37-b81e-15bc4dcd0102
     // Actu2 vers detailsActu2 : http://gotostep/?Step2.Mobile.html?Id=0004542f-9459-4e37-b81e-15bc4dcd9901&
-
+    
     
     long index = [APPLICATION_SUPPORT_PATH length] - 1;
     NSString *path = [APPLICATION_SUPPORT_PATH substringToIndex:index];
+    NSString *longPath;
     
     self.whereWasI = self.navigationItem.title;
     
+    if (self.NavigateTo && self.PageID) {
+        longPath = [NSString stringWithFormat:@"%@/%@", path, self.NavigateTo];
+    }
+    
     /*NSLog(@"URL : %@", request.URL);
-    NSLog(@"Host : %@", [request.URL host]);
-    NSLog(@"Query : %@", [request.URL query]);
-    NSLog(@"Relative path : %@", [request.URL relativePath]);
-    NSLog(@"Navigation type : %d", navigationType);*/
+     NSLog(@"Query : %@", [request.URL query]);
+     NSLog(@"Relative path : %@", [request.URL relativePath]);
+     NSLog(@"Host : %@", [request.URL host]);
+      NSLog(@"Navigation type : %d", navigationType);*/
     
     if ([[request.URL relativePath] isEqualToString:path]) {
         // First loading
@@ -320,7 +374,7 @@
             DisplayViewController *displayView = (DisplayViewController*) [self.storyboard instantiateViewControllerWithIdentifier:@"displayView"];
             displayView.NavigateTo = nil;
             displayView.PageID = [request.URL query];
-            
+            //displayView.FeedID = nil;
             [self.navigationController pushViewController:displayView animated:YES];
             return NO;
         } else if ([[request.URL host] isEqualToString:@"gotostep"]) {
@@ -329,22 +383,23 @@
             NSRange pointSeparator = [[request.URL query] rangeOfString:@"?"];
             if (pointSeparator.location == NSNotFound) {
                 displayView.NavigateTo = [request.URL query];
+                //displayView.PageID = nil;
+                //displayView.FeedID = nil;
             } else {
                 displayView.NavigateTo = [[request.URL query] substringToIndex:pointSeparator.location];
-                /* 2° param de la query : ID de la page
-                NSRange egalSeparator = [[request.URL query] rangeOfString:@"="];
-                NSString *idToChange = [[[request.URL query] substringFromIndex:egalSeparator.location +1] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"&"]]; */
+                // 2° param de la query : ID du feed
+                displayView.FeedID = [[request.URL query] substringFromIndex:pointSeparator.location +1];
+                displayView.PageID = self.PageID;
             }
-            displayView.PageID = self.PageID;
             
             [self.navigationController pushViewController:displayView animated:YES];
             return NO;
+        } else if ([[request.URL host] isEqualToString:@"backtostep"]) {
+            // HTML back button => simulate back button click in navigation bar
+            [[self navigationController] popViewControllerAnimated:YES];
+            return NO;
         }
     } else if ([[request.URL host] isEqualToString:@"gotomenu"]) {
-        // HTML back button => simulate back button click in navigation bar
-        [[self navigationController] popViewControllerAnimated:YES];
-        return NO;
-    } else if ([[request.URL host] isEqualToString:@"backtostep"]) {
         // HTML back button => simulate back button click in navigation bar
         [[self navigationController] popViewControllerAnimated:YES];
         return NO;
@@ -375,12 +430,12 @@
     } else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Settings"]) {
         // Go to settings
         self.isConflictual = NO;
-
+        
         [alertView dismissWithClickedButtonIndex:buttonIndex animated:YES];
         SettingsView *showSettings = [[SettingsView alloc] init];
         showSettings = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsView"];
         [self.navigationController pushViewController:showSettings animated:YES];
-
+        
     } else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"OK"]) {
         self.isConflictual = NO;
         self.Img.hidden = YES;
@@ -415,7 +470,10 @@
         if (appDel == Nil) {
             appDel = (AppDelegate *)[[UIApplication sharedApplication] delegate];
         }
-        NSTimeInterval currentInterval = [[NSDate date] timeIntervalSinceDate:[[NSUserDefaults standardUserDefaults] objectForKey:@"downloadDate"]];
+        NSDateFormatter *formatDate = [[NSDateFormatter alloc] init];
+        NSDate *downloadDate = [formatDate dateFromString:[[NSUserDefaults standardUserDefaults] objectForKey:@"downloadDate"]];
+        
+        NSTimeInterval currentInterval = [[NSDate date] timeIntervalSinceDate:downloadDate];
         NSLog(@"Current interval = %f, Choosen Interval = %f", currentInterval, timer.timeInterval);
         
         if (!cacheIsEnabled) {
@@ -425,6 +483,15 @@
             }
         }
     }
+}
+
+- (void)clickBackMenuIcon:(id)sender
+{
+    DisplayViewController *displayView = (DisplayViewController*) [self.storyboard instantiateViewControllerWithIdentifier:@"displayView"];
+    displayView.NavigateTo = nil;
+    displayView.PageID = nil;
+    displayView.FeedID = nil;
+    [self.navigationController pushViewController:displayView animated:YES];
 }
 
 @end

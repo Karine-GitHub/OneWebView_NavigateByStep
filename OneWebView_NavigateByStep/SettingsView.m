@@ -88,48 +88,24 @@
     // Check if settings view is visible
     if ([self.navigationController.visibleViewController isKindOfClass:[SettingsView class]])
     {
-        self.reconfigNecessary = NO;
-        [NSThread sleepForTimeInterval:3.0];
-        // Set Datas & Images Sizes
-        self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue]];
-        self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images", APPLICATION_SUPPORT_PATH]] floatValue]];
-        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];        
-        // Alert user that downloading is finished
-        self.errorMsg = [NSString stringWithFormat:@"The downloading of files is done."];
-        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Downloading Successful" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alertNoConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+        @synchronized(self){
+            self.reconfigNecessary = NO;
+            [NSThread sleepForTimeInterval:3.0];
+            // Set Datas & Images Sizes
+            self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue]];
+            self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images", APPLICATION_SUPPORT_PATH]] floatValue]];
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            self.navigationItem.hidesBackButton = NO;
+            // Alert user that downloading is finished
+            self.errorMsg = [NSString stringWithFormat:@"The downloading of files is done."];
+            UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Downloading Successful" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alertNoConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+        }
     }
 }
 - (void)refreshApp:(NSNotification *)notification {
     // Set RefreshChoice text when RefreshSettingsView disapear
-    
-    char plural = [[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"] characterAtIndex:[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"].length -1];
-    
-    if ([[NSUserDefaults standardUserDefaults] integerForKey:@"intervalChoice"] > 1 && plural != 's') {
-        NSString *pluriel = [NSString stringWithFormat:@"%@s", [[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"]];
-        self.refreshValue = [NSString stringWithFormat:@"%@ %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"], pluriel];
-    } else {
-        self.refreshValue = [NSString stringWithFormat:@"%@ %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"], [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]];
-    }
-    
-    if (![self.refreshChoice.text isEqualToString:self.refreshValue]) {
-        self.reconfigNecessary = YES;
-    }
-    self.refreshChoice.text = self.refreshValue;
-    
-    self.goToRefresh = NO;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    self.reconfigNecessary = NO;
-    
-    self.SettingsTable.delegate = self;
-    
-    // Set RefreshChoice text
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]) {
+    @synchronized(self){
         char plural = [[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"] characterAtIndex:[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"].length -1];
         
         if ([[NSUserDefaults standardUserDefaults] integerForKey:@"intervalChoice"] > 1 && plural != 's') {
@@ -138,39 +114,67 @@
         } else {
             self.refreshValue = [NSString stringWithFormat:@"%@ %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"], [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]];
         }
-    } else {
-        self.refreshValue = @"1 jour";
+        
+        if (![self.refreshChoice.text isEqualToString:self.refreshValue]) {
+            self.reconfigNecessary = YES;
+        }
+        self.refreshChoice.text = self.refreshValue;
+        
+        self.goToRefresh = NO;
     }
-    self.refreshChoice.text = self.refreshValue;
-    
-    // Set Datas & Images Sizes
-    self.size = [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue];
-    self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", self.size];
-    self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images", APPLICATION_SUPPORT_PATH]] floatValue]];
-    
-    // Set Mode Cache
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"cache"]) {
-        [self.cacheMode setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"cache"] animated:YES];
-    } else {
-        [self.cacheMode setOn:NO];
-    }
-    
-    // Set Roaming Mode
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"roaming"]) {
-        [self.roamingMode setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"roaming"] animated:YES];
-    } else {
-        [self.roamingMode setOn:YES];
-    }
+}
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
     @synchronized(self) {
+        self.reconfigNecessary = NO;
+        
+        self.SettingsTable.delegate = self;
+        
+        // Set RefreshChoice text
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]) {
+            char plural = [[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"] characterAtIndex:[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"].length -1];
+            
+            if ([[NSUserDefaults standardUserDefaults] integerForKey:@"intervalChoice"] > 1 && plural != 's') {
+                NSString *pluriel = [NSString stringWithFormat:@"%@s", [[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"]];
+                self.refreshValue = [NSString stringWithFormat:@"%@ %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"], pluriel];
+            } else {
+                self.refreshValue = [NSString stringWithFormat:@"%@ %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"], [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]];
+            }
+        } else {
+            self.refreshValue = @"1 jour";
+        }
+        self.refreshChoice.text = self.refreshValue;
+        
+        // Set Datas & Images Sizes
+        self.size = [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue];
+        self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", self.size];
+        self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images", APPLICATION_SUPPORT_PATH]] floatValue]];
+        
+        // Set Mode Cache
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"cache"]) {
+            [self.cacheMode setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"cache"] animated:YES];
+        } else {
+            [self.cacheMode setOn:NO];
+        }
+        
+        // Set Roaming Mode
+        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"roaming"]) {
+            [self.roamingMode setOn:[[NSUserDefaults standardUserDefaults] boolForKey:@"roaming"] animated:YES];
+        } else {
+            [self.roamingMode setOn:YES];
+        }
+        
         cacheIsEnabled = self.cacheMode.isOn;
         roamingIsEnabled = self.roamingMode.isOn;
-    }
-    
-    // If conflictual situation, block in Settings view
-    if ((self.cacheMode.isOn && self.size == 0.0) || (appDel.roamingSituation && !self.roamingMode.isOn)) {
-        self.navigationItem.hidesBackButton = YES;
-    } else {
-        self.navigationItem.hidesBackButton = NO;
+        
+        // If conflictual situation, block in Settings view
+        if ((self.cacheMode.isOn && self.size == 0.0) || (appDel.roamingSituation && !self.roamingMode.isOn)) {
+            self.navigationItem.hidesBackButton = YES;
+        } else {
+            self.navigationItem.hidesBackButton = NO;
+        }
     }
 }
 
@@ -216,6 +220,8 @@
                 [alertConflict show];
             } else {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+                [self.navigationItem.backBarButtonItem setEnabled:NO];
+                self.navigationItem.hidesBackButton = YES;
                 self.reconfigNecessary = YES;
                 // Download all
                 @try {

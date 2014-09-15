@@ -38,6 +38,14 @@
 		84ECF10019BF3A300088BC40 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF0FF19BF3A300088BC40 /* MapKit.framework */; };
 		84ECF10219BF3C040088BC40 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10119BF3C040088BC40 /* CoreLocation.framework */; };
 		84ECF10419BF3C0F0088BC40 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */; };
+		84ECF10619C1A0F60088BC40 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10519C1A0F60088BC40 /* AddressBook.framework */; };
+		84F069E419C7068300D28206 /* calendar-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069DF19C7068300D28206 /* calendar-44.png */; };
+		84F069E519C7068300D28206 /* contact.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E019C7068300D28206 /* contact.png */; };
+		84F069E619C7068300D28206 /* Filter-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E119C7068300D28206 /* Filter-44.png */; };
+		84F069E719C7068300D28206 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E219C7068300D28206 /* share.png */; };
+		84F069E819C7068300D28206 /* sort-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E319C7068300D28206 /* sort-44.png */; };
+		84F069EA19C706C600D28206 /* BackButtonHome-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E919C706C600D28206 /* BackButtonHome-44.png */; };
+		84F069EC19C7079200D28206 /* geolocation-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069EB19C7079200D28206 /* geolocation-44.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +101,14 @@
 		84ECF0FF19BF3A300088BC40 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		84ECF10119BF3C040088BC40 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		84ECF10519C1A0F60088BC40 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		84F069DF19C7068300D28206 /* calendar-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calendar-44.png"; sourceTree = "<group>"; };
+		84F069E019C7068300D28206 /* contact.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contact.png; sourceTree = "<group>"; };
+		84F069E119C7068300D28206 /* Filter-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Filter-44.png"; sourceTree = "<group>"; };
+		84F069E219C7068300D28206 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
+		84F069E319C7068300D28206 /* sort-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sort-44.png"; sourceTree = "<group>"; };
+		84F069E919C706C600D28206 /* BackButtonHome-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BackButtonHome-44.png"; sourceTree = "<group>"; };
+		84F069EB19C7079200D28206 /* geolocation-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "geolocation-44.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +116,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84ECF10619C1A0F60088BC40 /* AddressBook.framework in Frameworks */,
 				84ECF10419BF3C0F0088BC40 /* AddressBookUI.framework in Frameworks */,
 				84ECF10219BF3C040088BC40 /* CoreLocation.framework in Frameworks */,
 				84BB2D4119B8871F0073A8FE /* CoreTelephony.framework in Frameworks */,
@@ -148,6 +165,7 @@
 		84BB2CEA19B885FC0073A8FE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84ECF10519C1A0F60088BC40 /* AddressBook.framework */,
 				84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */,
 				84ECF10119BF3C040088BC40 /* CoreLocation.framework */,
 				84ECF0FF19BF3A300088BC40 /* MapKit.framework */,
@@ -166,6 +184,7 @@
 		84BB2CF119B885FC0073A8FE /* OneWebView_NavigateByStep */ = {
 			isa = PBXGroup;
 			children = (
+				84F069CA19C6D74600D28206 /* Images */,
 				84BB2D3719B886BA0073A8FE /* SettingsView.h */,
 				84BB2D3819B886BA0073A8FE /* SettingsView.m */,
 				84BB2D3119B886920073A8FE /* RefreshSettingViewController.h */,
@@ -183,7 +202,6 @@
 				84BB2D1E19B886750073A8FE /* DisplayViewController.m */,
 				84ECF0F319BDE2A70088BC40 /* UITableViewCellWithSwitch.h */,
 				84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */,
-				84BB2D2219B886840073A8FE /* 20-gear2.png */,
 				84BB2D2619B886840073A8FE /* Images.xcassets */,
 				84BB2D2319B886840073A8FE /* en.lproj */,
 				84BB2CF219B885FD0073A8FE /* Supporting Files */,
@@ -228,6 +246,21 @@
 				84BB2D2419B886840073A8FE /* InfoPlist.strings */,
 			);
 			path = en.lproj;
+			sourceTree = "<group>";
+		};
+		84F069CA19C6D74600D28206 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				84F069DF19C7068300D28206 /* calendar-44.png */,
+				84F069E019C7068300D28206 /* contact.png */,
+				84F069E919C706C600D28206 /* BackButtonHome-44.png */,
+				84F069E119C7068300D28206 /* Filter-44.png */,
+				84F069E219C7068300D28206 /* share.png */,
+				84F069EB19C7079200D28206 /* geolocation-44.png */,
+				84F069E319C7068300D28206 /* sort-44.png */,
+				84BB2D2219B886840073A8FE /* 20-gear2.png */,
+			);
+			name = Images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -314,12 +347,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				84BB2CF619B885FD0073A8FE /* InfoPlist.strings in Resources */,
+				84F069E419C7068300D28206 /* calendar-44.png in Resources */,
 				84BB2D2D19B886840073A8FE /* Images.xcassets in Resources */,
+				84F069E619C7068300D28206 /* Filter-44.png in Resources */,
+				84F069EC19C7079200D28206 /* geolocation-44.png in Resources */,
+				84F069EA19C706C600D28206 /* BackButtonHome-44.png in Resources */,
+				84F069E719C7068300D28206 /* share.png in Resources */,
 				84BB2D2C19B886840073A8FE /* InfoPlist.strings in Resources */,
 				84BB2D2E19B886840073A8FE /* Main_iPad.storyboard in Resources */,
 				84BB2D2B19B886840073A8FE /* 20-gear2.png in Resources */,
+				84F069E519C7068300D28206 /* contact.png in Resources */,
 				84BB2D2F19B886840073A8FE /* Main_iPhone.storyboard in Resources */,
 				84BB2D2019B886750073A8FE /* Configuration.plist in Resources */,
+				84F069E819C7068300D28206 /* sort-44.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

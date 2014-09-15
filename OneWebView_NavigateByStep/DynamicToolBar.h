@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+static BOOL addInCalendar;
+static double currentStepValue;
+
 @interface DynamicToolBar : NSObject
 
 + (UIToolbar *) createToolBarIn:(UIView *)parentView withSteps:(NSDictionary *)steps;
@@ -16,10 +19,12 @@
 + (void) dataRefreshClick:(id)sender;
 + (void) searchClick:(id)sender;
 + (void) filterClick:(id)sender;
++ (void) sortClick:(id)sender;
 + (void) shareClick:(id)sender;
 + (void) geolocationClick:(id)sender;
 + (void) contactClick:(id)sender;
 + (void) calendarClick:(id)sender;
-+ (void) navigateClick:(id)stepper;
++ (void) navigateClick:(UIStepper *)stepper;
+
 
 @end

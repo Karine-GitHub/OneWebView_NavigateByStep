@@ -8,17 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface DisplayViewController : UIViewController <UIAlertViewDelegate, UITextViewDelegate, UISplitViewControllerDelegate, UIWebViewDelegate, UITabBarDelegate>
+@interface DisplayViewController : UIViewController <UIAlertViewDelegate, UITextViewDelegate, UISplitViewControllerDelegate, UIWebViewDelegate, UITabBarDelegate,ABUnknownPersonViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *Display;
 @property (strong, nonatomic) IBOutlet UIImageView *Img;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *Activity;
 
-@property id PageID;
-@property id NavigateTo;
-
-@property long webviewI;
-@property long imageI;
+@property NSString *PageID;
+@property NSString *NavigateTo;
+@property NSString *FeedID;
+@property long currentDetailsId;
+@property long itemsCount;
 
 @property (strong, nonatomic) UIAlertView *SettingsDone;
 @property (strong, nonatomic) UIActivityViewController *ShareActivity;
@@ -31,7 +31,7 @@
 
 - (void)reloadApp;
 - (void)initApp;
-- (void)configureViewWithStep:(NSString *)goTo;
+- (void)configureViewWithPageID:(NSString *)pageId withStepName:(NSString *)stepName withFeedId:(NSString *)feedId;
 
 - (void) refreshApplicationByNewDownloading;
 - (void) forceDownloadingApplication:(NSTimer *)timer;
