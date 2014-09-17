@@ -29,6 +29,7 @@ extern BOOL roamingIsEnabled;
 @property long VersionID;
 
 // Settings
+@property BOOL autoRefresh;
 @property BOOL roamingSituation;
 @property NSNumber *refreshInterval;
 @property NSString *refreshDuration;

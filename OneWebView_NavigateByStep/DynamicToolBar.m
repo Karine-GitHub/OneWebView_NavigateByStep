@@ -16,11 +16,19 @@
 {
     CGRect screenBound = [[UIScreen mainScreen] bounds];
     
-    UIToolbar *dynamicToolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, screenBound.size.height - 45, screenBound.size.width, 60)];
+    UIToolbar *dynamicToolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, screenBound.size.height - 44, screenBound.size.width, 60)];
     [dynamicToolBar sizeToFit];
     [dynamicToolBar setTranslucent:YES];
-    //[dynamicToolBar setBackgroundColor:parentView.backgroundColor];
+    [dynamicToolBar setBackgroundColor:parentView.backgroundColor];
     NSMutableArray *toolBarItems = [[NSMutableArray alloc] init];
+    
+    if ([[steps valueForKey:@"AllowDataRefreshing"] isEqual:[NSNumber numberWithBool:YES]]) {
+        UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(dataRefreshClick:)];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        
+        [toolBarItems addObject:refresh];
+        [toolBarItems addObject:space];
+    }
     
     if ([[steps valueForKey:@"AllowLastUpdateDate"] isEqual:[NSNumber numberWithBool:YES]]) {
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
@@ -31,77 +39,89 @@
         updateInfos.text = [NSString stringWithFormat:@"Mise à jour le %@", update];
         [updateInfos setFont:[UIFont fontWithName:@"Helvetica" size:12.0]];
         updateInfos.textAlignment = NSTextAlignmentCenter;
-        [updateInfos setFrame:CGRectMake(3, 3, dynamicToolBar.frame.size.width - 70, dynamicToolBar.frame.size.height)];
+        [updateInfos setFrame:CGRectMake(3, 3, dynamicToolBar.frame.size.width - 80, dynamicToolBar.frame.size.height)];
         UIBarButtonItem *labelContainer = [[UIBarButtonItem alloc] initWithCustomView:updateInfos];
         [toolBarItems addObject:labelContainer];
     }
     
     if ([[steps valueForKey:@"AllowApplicationSettings"] isEqual:[NSNumber numberWithBool:YES]]) {
-        UIImage *settingsImg = [[UIImage imageNamed:@"20-gear2.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:settingsImg style:UIBarButtonItemStyleBordered target:self action:@selector(settingsClick:)];
+        //UIImage *settingsImg = [[UIImage imageNamed:@"20-gear2.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings-free.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(settingsClick:)];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
         [toolBarItems addObject:settings];
+        [toolBarItems addObject:space];
+
     }
     
-    if ([[steps valueForKey:@"AllowDataRefresh"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *refreshImg = [[UIImage imageNamed:@"refresh27-32.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        //UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithTitle:@"Refresh" style:UIBarButtonItemStyleBordered target:self action:@selector(dataRefreshClick:)];
-        //[refresh setImage:refreshImg];
-        
-        UIBarButtonItem *refresh = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(dataRefreshClick:)];
-        [toolBarItems addObject:refresh];
-    }
-    
-    if ([[steps valueForKey:@"AllowSearch"] isEqual:[NSNumber numberWithBool:YES]]) {
-        /*UIImage *searchImg = [[UIImage imageNamed:@"search-32.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithTitle:@"Search" style:UIBarButtonItemStyleBordered target:self action:@selector(searchClick:)];
-        [search setImage:searchImg];*/
-        
+    if ([[steps valueForKey:@"AllowSearching"] isEqual:[NSNumber numberWithBool:YES]]) {
         UIBarButtonItem *search = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(searchClick:)];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
         [toolBarItems addObject:search];
+        [toolBarItems addObject:space];
+
     }
     
     if ([[steps valueForKey:@"AllowFiltering"] isEqual:[NSNumber numberWithBool:YES]]) {
-        UIImage *filterImg = [[UIImage imageNamed:@"Filter-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-        UIBarButtonItem *filter = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStyleBordered target:self action:@selector(searchClick:)];
-        [filter setImage:filterImg];
+        //UIImage *filterImg = [[UIImage imageNamed:@"Filter-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIBarButtonItem *filter = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStyleBordered target:self action:@selector(filterClick:)];
+        [filter setImage:[UIImage imageNamed:@"filter-free.png"]];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
         [toolBarItems addObject:filter];
+        [toolBarItems addObject:space];
+
     }
     
     if ([[steps valueForKey:@"AllowSorting"] isEqual:[NSNumber numberWithBool:YES]]) {
-        UIImage *sortImg = [[UIImage imageNamed:@"sort-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        //UIImage *sortImg = [[UIImage imageNamed:@"sort-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *sort = [[UIBarButtonItem alloc] initWithTitle:@"Sort" style:UIBarButtonItemStyleBordered target:self action:@selector(sortClick:)];
-        [sort setImage:sortImg];
+        [sort setImage:[UIImage imageNamed:@"sort_alphabetical_free.png"]];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
         [toolBarItems addObject:sort];
+        [toolBarItems addObject:space];
     }
     
-    if ([[steps valueForKey:@"AllowShare"] isEqual:[NSNumber numberWithBool:YES]]) {
-        UIImage *shareImg = [[UIImage imageNamed:@"share.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    if ([[steps valueForKey:@"AllowSharing"] isEqual:[NSNumber numberWithBool:YES]]) {
+        //UIImage *shareImg = [[UIImage imageNamed:@"share.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *share = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:@selector(shareClick:)];
-        [share setImage:shareImg];
-        //UIBarButtonItem *share = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystem target:self action:@selector(shareClick:)];
+        [share setImage:[UIImage imageNamed:@"ShareFree-32.png"]];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
 
         [toolBarItems addObject:share];
+        [toolBarItems addObject:space];
     }
     
     if ([[steps valueForKey:@"AllowGeolocalisation"] isEqual:[NSNumber numberWithBool:YES]]) {
-        UIImage *geolocImg = [[UIImage imageNamed:@"geolocation-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        //UIImage *geolocImg = [[UIImage imageNamed:@"geolocation-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *geolocation = [[UIBarButtonItem alloc] initWithTitle:@"Loc" style:UIBarButtonItemStyleBordered target:self action:@selector(geolocationClick:)];
-        [geolocation setImage:geolocImg];
+        [geolocation setImage:[UIImage imageNamed:@"maps-free.png"]];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
         [toolBarItems addObject:geolocation];
+        [toolBarItems addObject:space];
     }
     
     if ([[steps valueForKey:@"AllowAddContact"] isEqual:[NSNumber numberWithBool:YES]]) {
-        UIImage *contactImg = [[UIImage imageNamed:@"contact.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        //UIImage *contactImg = [[UIImage imageNamed:@"contact.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *contact = [[UIBarButtonItem alloc] initWithTitle:@"Contact" style:UIBarButtonItemStyleBordered target:self action:@selector(contactClick:)];
-        [contact setImage:contactImg];
+        [contact setImage:[UIImage imageNamed:@"Business-Contact-icon.png"]];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
         [toolBarItems addObject:contact];
+        [toolBarItems addObject:space];
     }
     
     if ([[steps valueForKey:@"AllowAddCalendar"] isEqual:[NSNumber numberWithBool:YES]]) {
-        UIImage *calendarImg = [[UIImage imageNamed:@"calendar-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        //UIImage *calendarImg = [[UIImage imageNamed:@"calendar-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *calendar = [[UIBarButtonItem alloc] initWithTitle:@"Calendar" style:UIBarButtonItemStyleBordered target:self action:@selector(calendarClick:)];
-        [calendar setImage:calendarImg];
+        [calendar setImage:[UIImage imageNamed:@"Calendar-free.png"]];
+        UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+
         [toolBarItems addObject:calendar];
+        [toolBarItems addObject:space];
     }
     
     if ([[steps valueForKey:@"AllowPageNavigation"] isEqual:[NSNumber numberWithBool:YES]]) {
@@ -111,6 +131,8 @@
         [navigate setMaximumValue:(double)controller.itemsCount];
         [navigate setValue:(double)controller.currentDetailsId];
         [navigate addTarget:self action:@selector(navigateClick:) forControlEvents:UIControlEventValueChanged];
+        [navigate setIncrementImage:[UIImage imageNamed:@"arrow-up-free.png"] forState:UIControlStateNormal];
+        [navigate setDecrementImage:[UIImage imageNamed:@"arrow-down-free.png"] forState:UIControlStateNormal];
         UIBarButtonItem *stepperContainer = [[UIBarButtonItem alloc] initWithCustomView:navigate];
         [toolBarItems addObject:stepperContainer];
     }
@@ -122,8 +144,6 @@
 + (void) settingsClick:(id)sender
 {
     // 1° : toolbar, 2° : view, 3° : viewController
-    NSLog(@"Nextresponder : %@",[[[sender nextResponder] nextResponder] nextResponder]);
-    
     UIViewController *controller = (UIViewController *)[[[sender nextResponder] nextResponder] nextResponder];
     [controller.navigationController pushViewController:[controller.storyboard instantiateViewControllerWithIdentifier:@"settingsView"] animated:YES];
 }
@@ -141,14 +161,24 @@
 
 + (void) searchClick:(id)sender
 {
+    DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
     
+    [controller.Display stringByEvaluatingJavaScriptFromString:@"showSearch()"];
 }
 
 + (void) filterClick:(id)sender
-{}
+{
+    DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
+    
+    [controller.Display stringByEvaluatingJavaScriptFromString:@"showFilterForm()"];
+}
 
 + (void) sortClick:(id)sender
-{}
+{
+    DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
+    
+    [controller.Display stringByEvaluatingJavaScriptFromString:@"Sort()"];
+}
 
 + (void) shareClick:(id)sender
 {
@@ -169,7 +199,13 @@
         [shareArray addObject:shareMessage];
     }
     if ([jsonResult objectForKey:@"url"]) {
-        NSString *url = [NSString stringWithFormat:@"http://%@", [jsonResult objectForKey:@"url"]];
+        NSString *url;
+        NSRange check = [[jsonResult objectForKey:@"url"] rangeOfString:@"http"];
+        if (check.location == NSNotFound) {
+            url = [NSString stringWithFormat:@"http://%@", [jsonResult objectForKey:@"url"]];
+        } else {
+            url = [jsonResult objectForKey:@"url"];
+        }
         NSURL *shareUrl = [NSURL URLWithString:url];
         [shareArray addObject:shareUrl];
     }
@@ -235,58 +271,102 @@
 + (void) contactClick:(id)sender
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
+
+    NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getAddContactData()"];
+    NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+    NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
     
     ABUnknownPersonViewController *addContact = [[ABUnknownPersonViewController alloc] init];
     addContact.unknownPersonViewDelegate = controller;
     addContact.allowsAddingToAddressBook = YES;
-
-    ABRecordRef person = ABPersonCreate();
-
-    /*NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getAddContactData()"];
-    NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
-    NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];*/
     
-    /*if ([jsonResult objectForKey:@"name"]) {
-        ABRecordSetValue(person, kABPersonFirstNameProperty, (__bridge CFStringRef)[jsonResult objectForKey:@"Name"], nil);
-        ABRecordSetValue(person, kABPersonLastNameProperty, (__bridge CFStringRef)[jsonResult objectForKey:@"Name"], nil);
+    ABRecordRef person = ABPersonCreate();
+    ABMutableMultiValueRef multipleNumber = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    ABMutableMultiValueRef multipleEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+    ABMutableMultiValueRef allAddresses = ABMultiValueCreateMutable(kABMultiDictionaryPropertyType);
+    
+    /*if ([jsonResult objectForKey:@"firstName"]) {
+        ABRecordSetValue(person, kABPersonFirstNameProperty, (__bridge CFStringRef)[jsonResult objectForKey:@"fistName"], nil);
     }
-    if ([jsonResult objectForKey:@"age"]) {
-        ABRecordSetValue(person, kABPersonBirthdayProperty, (__bridge CFStringRef)@"01012014", nil);
+    if ([jsonResult objectForKey:@"lastName"]) {
+        ABRecordSetValue(person, kABPersonLastNameProperty, (__bridge CFStringRef)[jsonResult objectForKey:@"lastName"], nil);
+    }
+    if ([jsonResult objectForKey:@"organization"]) {
+        ABRecordSetValue(person, kABPersonOrganizationProperty, (__bridge CFStringRef)[jsonResult objectForKey:@"organization"], nil);
+    }
+    if ([jsonResult objectForKey:@"jobTitle"]) {
+        ABRecordSetValue(person, kABPersonJobTitleProperty, (__bridge CFStringRef)[jsonResult objectForKey:@"jobTitle"], nil);
+    }
+    if ([jsonResult objectForKey:@"birthday"]) {
+        NSDateFormatter *format = [[NSDateFormatter alloc] init];
+        [format setDateFormat:@"ddMMyyyy"];
+        [format setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+        NSDate *birthday = [format dateFromString:[jsonResult objectForKey:@"birthday"]];
+        ABRecordSetValue(person, kABPersonBirthdayProperty, (__bridge CFDateRef)birthday, nil);
     }
     if ([jsonResult objectForKey:@"phoneNumber"]) {
-        ABMultiValueAddValueAndLabel(multipleNumber, (__bridge CFStringRef)[jsonResult objectForKey:@"PhoneNumber"], kABPersonPhoneMainLabel, nil);
-
+        ABMultiValueAddValueAndLabel(multipleNumber, (__bridge CFStringRef)[jsonResult objectForKey:@"phoneNumber"], kABPersonPhoneMainLabel, nil);
     }
     if ([jsonResult objectForKey:@"faxNumber"]) {
-        ABMultiValueAddValueAndLabel(multipleNumber, (__bridge CFStringRef)[jsonResult objectForKey:@"FaxNumber"], kABPersonPhoneWorkFAXLabel, nil);
+        ABMultiValueAddValueAndLabel(multipleNumber, (__bridge CFStringRef)[jsonResult objectForKey:@"faxNumber"], kABPersonPhoneWorkFAXLabel, nil);
     }
     if ([jsonResult objectForKey:@"email"]) {
-        ABRecordSetValue(person, kABPersonEmailProperty, (__bridge CFStringRef)[jsonResult objectForKey:@"Email"], nil);
+        ABMutableMultiValueRef multipleEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
+        ABMultiValueAddValueAndLabel(multipleEmail, (__bridge CFTypeRef)([jsonResult objectForKey:@"email"]), CFSTR("email"), nil);
+        ABRecordSetValue(person, kABPersonEmailProperty, multipleEmail, nil);
+    }
+    if ([jsonResult objectForKey:@"urlImage"]) {
+        NSData *imgFile = [NSData dataWithContentsOfURL:[NSURL URLWithString:[jsonResult objectForKey:@"urlImage"]]];
+        NSData *contactImage = UIImagePNGRepresentation([UIImage imageWithData:imgFile]);
+        ABPersonSetImageData(person, (__bridge CFDataRef)(contactImage), nil);
+    }
+    if ([jsonResult objectForKey:@"addresses"]) {
+        for (NSDictionary *address in [jsonResult objectForKey:@"addresses"]) {
+            NSMutableDictionary *addressDictionary = [[NSMutableDictionary alloc] init];
+            [addressDictionary setObject:[address objectForKey:@"street"] forKey:(NSString *)kABPersonAddressStreetKey];
+            [addressDictionary setObject:[address objectForKey:@"zip"] forKey:(NSString *)kABPersonAddressZIPKey];
+            [addressDictionary setObject:[address objectForKey:@"city"] forKey:(NSString *)kABPersonAddressCityKey];
+            ABMultiValueAddValueAndLabel(allAddresses, (__bridge CFTypeRef)(addressDictionary), kABWorkLabel, nil);
+            ABRecordSetValue(person, kABPersonAddressProperty, allAddresses, nil);
+        }
+    }
+    if ([jsonResult objectForKey:@"notes"]) {
+        ABRecordSetValue(person, kABPersonNoteProperty, (__bridge CFTypeRef)[jsonResult objectForKey:@"notes"], nil);
     }*/
-
-    NSDateFormatter *format = [[NSDateFormatter alloc] init];
-    //[format setDateStyle:NSDateFormatterLongStyle];
-    [format setDateFormat:@"dd/MM/yyyy"];
-    NSDate *birthday = [format dateFromString:@"01/12/2000"];
+    
     ABRecordSetValue(person, kABPersonFirstNameProperty, @"Toto", nil);
     ABRecordSetValue(person, kABPersonLastNameProperty, @"Toto", nil);
-    ABRecordSetValue(person, kABPersonBirthdayProperty, (__bridge CFDateRef)birthday, nil);
-    // Numbers phone, fax,...
-    /*ABMutableMultiValueRef multipleNumber = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-    ABMultiValueAddValueAndLabel(multipleNumber, @"+352 123456", kABPersonPhoneMainLabel, nil);
-    ABMultiValueAddValueAndLabel(multipleNumber, @"+352 654321", kABPersonPhoneWorkFAXLabel, nil);
-    ABRecordSetValue(person, kABPersonPhoneProperty, multipleNumber, nil);*/
-    // Email
-    ABMutableMultiValueRef multipleEmail = ABMultiValueCreateMutable(kABMultiStringPropertyType);
-    bool success = ABMultiValueAddValueAndLabel(multipleEmail, @"vsmobile@vision.lu", CFSTR("email"), nil);
-    ABRecordSetValue(person, kABPersonEmailProperty, multipleEmail, nil);
-
-    addContact.displayedPerson = person;
     
-    //UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:addContact];
-    //[controller.navigationController presentViewController:nav animated:YES completion:nil];
-    //[addContact setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
-    //[controller presentViewController:addContact animated:YES completion:nil];
+    // Birthday
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    [format setDateFormat:@"ddMMyyyy"];
+    [format setTimeZone:[NSTimeZone timeZoneWithName:@"GMT"]];
+    NSDate *birthday = [format dateFromString:@"10051989"];
+    ABRecordSetValue(person, kABPersonBirthdayProperty, (__bridge CFDateRef)(birthday), nil);
+    
+    // Email
+    ABMultiValueAddValueAndLabel(multipleEmail, @"vsmobile@vision.lu", CFSTR("email"), nil);
+    ABRecordSetValue(person, kABPersonEmailProperty, multipleEmail, nil);
+    
+    // Numbers phone, fax,...
+    bool success = ABMultiValueAddValueAndLabel(multipleNumber, @"+352 123456", kABPersonPhoneMainLabel, nil);
+    success = ABMultiValueAddValueAndLabel(multipleNumber, @"+352 654321", kABPersonPhoneWorkFAXLabel, nil);
+    ABRecordSetValue(person, kABPersonPhoneProperty, multipleNumber, nil);
+    
+    // Address
+    NSMutableDictionary *addressDictionary = [[NSMutableDictionary alloc] init];
+    [addressDictionary setObject:@"7 rue des merovingiens" forKey:(NSString *)kABPersonAddressStreetKey];
+    [addressDictionary setObject:@"L-8070" forKey:(NSString *)kABPersonAddressZIPKey];
+    [addressDictionary setObject:@"Bertrange" forKey:(NSString *)kABPersonAddressCityKey];
+    ABMultiValueAddValueAndLabel(allAddresses, (__bridge CFTypeRef)(addressDictionary), kABWorkLabel, nil);
+    ABRecordSetValue(person, kABPersonAddressProperty, allAddresses, nil);
+    
+    // Image
+    NSData *imgData = UIImagePNGRepresentation([UIImage imageNamed:@"BackButtonHome-44.png"]);
+    ABPersonSetImageData(person, (__bridge CFDataRef)(imgData), nil);
+    
+    addContact.displayedPerson = person;
+
     [controller.navigationController pushViewController:addContact animated:YES];
 }
 

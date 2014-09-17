@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
+#import "CustomInfoView.h"
 
 @interface SettingsView : UITableViewController <UIAlertViewDelegate, UITableViewDelegate>
 
@@ -29,6 +30,8 @@
 
 @property (strong, nonatomic) IBOutlet UITableViewCell *downloadDataCell;
 @property (strong, nonatomic) IBOutlet UITableViewCell *deleteCacheCell;
+
+@property CustomInfoView *activity;
 
 @property (strong, nonatomic) NSString *errorMsg;
 @property BOOL reconfigNecessary;

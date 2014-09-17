@@ -20,7 +20,6 @@
 		84BB2D1F19B886750073A8FE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1B19B886750073A8FE /* AppDelegate.m */; };
 		84BB2D2019B886750073A8FE /* Configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D1C19B886750073A8FE /* Configuration.plist */; };
 		84BB2D2119B886750073A8FE /* DisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1E19B886750073A8FE /* DisplayViewController.m */; };
-		84BB2D2B19B886840073A8FE /* 20-gear2.png in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2219B886840073A8FE /* 20-gear2.png */; };
 		84BB2D2C19B886840073A8FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2419B886840073A8FE /* InfoPlist.strings */; };
 		84BB2D2D19B886840073A8FE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2619B886840073A8FE /* Images.xcassets */; };
 		84BB2D2E19B886840073A8FE /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2719B886840073A8FE /* Main_iPad.storyboard */; };
@@ -39,13 +38,17 @@
 		84ECF10219BF3C040088BC40 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10119BF3C040088BC40 /* CoreLocation.framework */; };
 		84ECF10419BF3C0F0088BC40 /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */; };
 		84ECF10619C1A0F60088BC40 /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84ECF10519C1A0F60088BC40 /* AddressBook.framework */; };
-		84F069E419C7068300D28206 /* calendar-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069DF19C7068300D28206 /* calendar-44.png */; };
-		84F069E519C7068300D28206 /* contact.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E019C7068300D28206 /* contact.png */; };
-		84F069E619C7068300D28206 /* Filter-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E119C7068300D28206 /* Filter-44.png */; };
-		84F069E719C7068300D28206 /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E219C7068300D28206 /* share.png */; };
-		84F069E819C7068300D28206 /* sort-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E319C7068300D28206 /* sort-44.png */; };
 		84F069EA19C706C600D28206 /* BackButtonHome-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069E919C706C600D28206 /* BackButtonHome-44.png */; };
-		84F069EC19C7079200D28206 /* geolocation-44.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F069EB19C7079200D28206 /* geolocation-44.png */; };
+		84F06A1519C8789A00D28206 /* arrow-down-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A0D19C8789A00D28206 /* arrow-down-free.png */; };
+		84F06A1619C8789A00D28206 /* arrow-up-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A0E19C8789A00D28206 /* arrow-up-free.png */; };
+		84F06A1719C8789A00D28206 /* Calendar-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A0F19C8789A00D28206 /* Calendar-free.png */; };
+		84F06A1919C8789A00D28206 /* filter-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A1119C8789A00D28206 /* filter-free.png */; };
+		84F06A1A19C8789A00D28206 /* maps-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A1219C8789A00D28206 /* maps-free.png */; };
+		84F06A1B19C8789A00D28206 /* settings-free.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A1319C8789A00D28206 /* settings-free.png */; };
+		84F06A1C19C8789A00D28206 /* ShareFree-32.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A1419C8789A00D28206 /* ShareFree-32.png */; };
+		84F06A1E19C878E100D28206 /* sort_alphabetical_free.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A1D19C878E100D28206 /* sort_alphabetical_free.png */; };
+		84F06A2219C87A9500D28206 /* Business-Contact-icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 84F06A2119C87A9500D28206 /* Business-Contact-icon.png */; };
+		84F06A2519C97FF800D28206 /* CustomInfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F06A2419C97FF800D28206 /* CustomInfoView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,7 +80,6 @@
 		84BB2D1C19B886750073A8FE /* Configuration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configuration.plist; sourceTree = "<group>"; };
 		84BB2D1D19B886750073A8FE /* DisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayViewController.h; sourceTree = "<group>"; };
 		84BB2D1E19B886750073A8FE /* DisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayViewController.m; sourceTree = "<group>"; };
-		84BB2D2219B886840073A8FE /* 20-gear2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "20-gear2.png"; sourceTree = "<group>"; };
 		84BB2D2519B886840073A8FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		84BB2D2619B886840073A8FE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		84BB2D2719B886840073A8FE /* Main_iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main_iPad.storyboard; sourceTree = "<group>"; };
@@ -102,13 +104,18 @@
 		84ECF10119BF3C040088BC40 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		84ECF10319BF3C0F0088BC40 /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
 		84ECF10519C1A0F60088BC40 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
-		84F069DF19C7068300D28206 /* calendar-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "calendar-44.png"; sourceTree = "<group>"; };
-		84F069E019C7068300D28206 /* contact.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = contact.png; sourceTree = "<group>"; };
-		84F069E119C7068300D28206 /* Filter-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Filter-44.png"; sourceTree = "<group>"; };
-		84F069E219C7068300D28206 /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
-		84F069E319C7068300D28206 /* sort-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sort-44.png"; sourceTree = "<group>"; };
 		84F069E919C706C600D28206 /* BackButtonHome-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BackButtonHome-44.png"; sourceTree = "<group>"; };
-		84F069EB19C7079200D28206 /* geolocation-44.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "geolocation-44.png"; sourceTree = "<group>"; };
+		84F06A0D19C8789A00D28206 /* arrow-down-free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow-down-free.png"; sourceTree = "<group>"; };
+		84F06A0E19C8789A00D28206 /* arrow-up-free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "arrow-up-free.png"; sourceTree = "<group>"; };
+		84F06A0F19C8789A00D28206 /* Calendar-free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Calendar-free.png"; sourceTree = "<group>"; };
+		84F06A1119C8789A00D28206 /* filter-free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "filter-free.png"; sourceTree = "<group>"; };
+		84F06A1219C8789A00D28206 /* maps-free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "maps-free.png"; sourceTree = "<group>"; };
+		84F06A1319C8789A00D28206 /* settings-free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "settings-free.png"; sourceTree = "<group>"; };
+		84F06A1419C8789A00D28206 /* ShareFree-32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ShareFree-32.png"; sourceTree = "<group>"; };
+		84F06A1D19C878E100D28206 /* sort_alphabetical_free.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sort_alphabetical_free.png; sourceTree = "<group>"; };
+		84F06A2119C87A9500D28206 /* Business-Contact-icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Business-Contact-icon.png"; sourceTree = "<group>"; };
+		84F06A2319C97FF800D28206 /* CustomInfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomInfoView.h; sourceTree = "<group>"; };
+		84F06A2419C97FF800D28206 /* CustomInfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomInfoView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,6 +214,8 @@
 				84BB2CF219B885FD0073A8FE /* Supporting Files */,
 				84ECF0FC19BEDD380088BC40 /* DynamicToolBar.h */,
 				84ECF0FD19BEDD380088BC40 /* DynamicToolBar.m */,
+				84F06A2319C97FF800D28206 /* CustomInfoView.h */,
+				84F06A2419C97FF800D28206 /* CustomInfoView.m */,
 			);
 			path = OneWebView_NavigateByStep;
 			sourceTree = "<group>";
@@ -251,14 +260,16 @@
 		84F069CA19C6D74600D28206 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				84F069DF19C7068300D28206 /* calendar-44.png */,
-				84F069E019C7068300D28206 /* contact.png */,
+				84F06A0D19C8789A00D28206 /* arrow-down-free.png */,
+				84F06A0E19C8789A00D28206 /* arrow-up-free.png */,
+				84F06A2119C87A9500D28206 /* Business-Contact-icon.png */,
+				84F06A0F19C8789A00D28206 /* Calendar-free.png */,
+				84F06A1D19C878E100D28206 /* sort_alphabetical_free.png */,
+				84F06A1119C8789A00D28206 /* filter-free.png */,
+				84F06A1219C8789A00D28206 /* maps-free.png */,
+				84F06A1319C8789A00D28206 /* settings-free.png */,
+				84F06A1419C8789A00D28206 /* ShareFree-32.png */,
 				84F069E919C706C600D28206 /* BackButtonHome-44.png */,
-				84F069E119C7068300D28206 /* Filter-44.png */,
-				84F069E219C7068300D28206 /* share.png */,
-				84F069EB19C7079200D28206 /* geolocation-44.png */,
-				84F069E319C7068300D28206 /* sort-44.png */,
-				84BB2D2219B886840073A8FE /* 20-gear2.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -347,19 +358,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				84BB2CF619B885FD0073A8FE /* InfoPlist.strings in Resources */,
-				84F069E419C7068300D28206 /* calendar-44.png in Resources */,
 				84BB2D2D19B886840073A8FE /* Images.xcassets in Resources */,
-				84F069E619C7068300D28206 /* Filter-44.png in Resources */,
-				84F069EC19C7079200D28206 /* geolocation-44.png in Resources */,
 				84F069EA19C706C600D28206 /* BackButtonHome-44.png in Resources */,
-				84F069E719C7068300D28206 /* share.png in Resources */,
+				84F06A1619C8789A00D28206 /* arrow-up-free.png in Resources */,
 				84BB2D2C19B886840073A8FE /* InfoPlist.strings in Resources */,
+				84F06A1B19C8789A00D28206 /* settings-free.png in Resources */,
+				84F06A1A19C8789A00D28206 /* maps-free.png in Resources */,
+				84F06A2219C87A9500D28206 /* Business-Contact-icon.png in Resources */,
 				84BB2D2E19B886840073A8FE /* Main_iPad.storyboard in Resources */,
-				84BB2D2B19B886840073A8FE /* 20-gear2.png in Resources */,
-				84F069E519C7068300D28206 /* contact.png in Resources */,
+				84F06A1919C8789A00D28206 /* filter-free.png in Resources */,
+				84F06A1519C8789A00D28206 /* arrow-down-free.png in Resources */,
+				84F06A1719C8789A00D28206 /* Calendar-free.png in Resources */,
 				84BB2D2F19B886840073A8FE /* Main_iPhone.storyboard in Resources */,
+				84F06A1C19C8789A00D28206 /* ShareFree-32.png in Resources */,
 				84BB2D2019B886750073A8FE /* Configuration.plist in Resources */,
-				84F069E819C7068300D28206 /* sort-44.png in Resources */,
+				84F06A1E19C878E100D28206 /* sort_alphabetical_free.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,6 +394,7 @@
 				84BB2D1F19B886750073A8FE /* AppDelegate.m in Sources */,
 				84ECF0FE19BEDD380088BC40 /* DynamicToolBar.m in Sources */,
 				84BB2D2119B886750073A8FE /* DisplayViewController.m in Sources */,
+				84F06A2519C97FF800D28206 /* CustomInfoView.m in Sources */,
 				84BB2D3019B886840073A8FE /* Reachability.m in Sources */,
 				84BB2D3519B886930073A8FE /* RefreshSettingViewController.m in Sources */,
 				84BB2CF819B885FD0073A8FE /* main.m in Sources */,

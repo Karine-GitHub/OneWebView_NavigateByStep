@@ -142,11 +142,18 @@
         
         [self.Img setImage:[UIImage imageNamed:@"LaunchImage-700"]];
         
-        /*CGRect screenBound = [[UIScreen mainScreen] bounds];
-        // 46 -> toolbar
-        [self.Display setFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height - 70)];
-        [self.Img setFrame:CGRectMake(0, 0, screenBound.size.width, screenBound.size.height - 70)];*/
-        
+        [self.Display sizeToFit];
+        [self.Display.scrollView sizeToFit];
+
+        CGFloat height = [[self.Display stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
+        CGRect frameWebview = self.Display.frame;
+        CGRect frameScrollview = self.Display.scrollView.frame;
+        frameWebview.size.height = height;
+        frameScrollview.size.height = height;
+        [self.Display setFrame:frameWebview];
+        [self.Display.scrollView setFrame:frameScrollview];
+        [self.Display.scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height)];
+
         [self performSelectorInBackground:@selector(refreshApplicationByNewDownloading) withObject:self];
         
         if (self.isConflictual) {
@@ -324,6 +331,20 @@
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    [webView sizeToFit];
+    [webView.scrollView sizeToFit];
+    
+    if (![self.navigationItem.title isEqualToString:@"Menu"]) {
+        CGFloat height = [[webView stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
+        CGRect frameWebview = webView.frame;
+        CGRect frameScrollview = webView.scrollView.frame;
+        frameWebview.size.height = height + 150;
+        frameScrollview.size.height = height + 150;
+        [webView setFrame:frameWebview];
+        [webView.scrollView setFrame:frameScrollview];
+        [webView.scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height + 150)];
+    }
+
     [self.Activity stopAnimating];
     [self.Activity setHidden:YES];
     //self.Img.hidden = YES;
@@ -350,6 +371,7 @@
     // Actu2 vers detailsActu2 : http://gotostep/?Step2.Mobile.html?Id=0004542f-9459-4e37-b81e-15bc4dcd9901&
     
     
+    
     long index = [APPLICATION_SUPPORT_PATH length] - 1;
     NSString *path = [APPLICATION_SUPPORT_PATH substringToIndex:index];
     NSString *longPath;
@@ -364,49 +386,47 @@
      NSLog(@"Query : %@", [request.URL query]);
      NSLog(@"Relative path : %@", [request.URL relativePath]);
      NSLog(@"Host : %@", [request.URL host]);
-      NSLog(@"Navigation type : %d", navigationType);*/
+     NSLog(@"Navigation type : %d", navigationType);*/
     
     if ([[request.URL relativePath] isEqualToString:path]) {
         // First loading
         return YES;
-    } else if ([request.URL query] != nil) {
-        if ([[request.URL host] isEqualToString:@"goto"]) {
-            DisplayViewController *displayView = (DisplayViewController*) [self.storyboard instantiateViewControllerWithIdentifier:@"displayView"];
-            displayView.NavigateTo = nil;
-            displayView.PageID = [request.URL query];
-            //displayView.FeedID = nil;
-            [self.navigationController pushViewController:displayView animated:YES];
-            return NO;
-        } else if ([[request.URL host] isEqualToString:@"gotostep"]) {
-            DisplayViewController *displayView = (DisplayViewController*) [self.storyboard instantiateViewControllerWithIdentifier:@"displayView"];
-            
-            NSRange pointSeparator = [[request.URL query] rangeOfString:@"?"];
-            if (pointSeparator.location == NSNotFound) {
-                displayView.NavigateTo = [request.URL query];
-                //displayView.PageID = nil;
-                //displayView.FeedID = nil;
-            } else {
-                displayView.NavigateTo = [[request.URL query] substringToIndex:pointSeparator.location];
-                // 2° param de la query : ID du feed
-                displayView.FeedID = [[request.URL query] substringFromIndex:pointSeparator.location +1];
-                displayView.PageID = self.PageID;
-            }
-            
-            [self.navigationController pushViewController:displayView animated:YES];
-            return NO;
-        } else if ([[request.URL host] isEqualToString:@"backtostep"]) {
-            // HTML back button => simulate back button click in navigation bar
-            [[self navigationController] popViewControllerAnimated:YES];
-            return NO;
+    } else if ([request.URL query] != nil && [[request.URL host] isEqualToString:@"goto"]) {
+        DisplayViewController *displayView = (DisplayViewController*) [self.storyboard instantiateViewControllerWithIdentifier:@"displayView"];
+        displayView.NavigateTo = nil;
+        displayView.PageID = [request.URL query];
+        displayView.FeedID = nil;
+        [self.navigationController pushViewController:displayView animated:YES];
+        return NO;
+    } else if ([request.URL query] != nil && [[request.URL host] isEqualToString:@"gotostep"]) {
+        DisplayViewController *displayView = (DisplayViewController*) [self.storyboard instantiateViewControllerWithIdentifier:@"displayView"];
+        
+        NSRange pointSeparator = [[request.URL query] rangeOfString:@"?"];
+        if (pointSeparator.location == NSNotFound) {
+            displayView.NavigateTo = [request.URL query];
+            displayView.PageID = nil;
+            displayView.FeedID = nil;
+        } else {
+            displayView.NavigateTo = [[request.URL query] substringToIndex:pointSeparator.location];
+            // 2° param de la query : ID du feed
+            displayView.FeedID = [[request.URL query] substringFromIndex:pointSeparator.location +1];
+            displayView.PageID = self.PageID;
         }
+        [self.navigationController pushViewController:displayView animated:YES];
+        return NO;
+    } else if ([request.URL query] != nil && [[request.URL host] isEqualToString:@"backtostep"]) {
+        // HTML back button => simulate back button click in navigation bar
+        [[self navigationController] popViewControllerAnimated:YES];
+        return NO;
     } else if ([[request.URL host] isEqualToString:@"gotomenu"]) {
         // HTML back button => simulate back button click in navigation bar
         [[self navigationController] popViewControllerAnimated:YES];
         return NO;
-    } else if (![request.URL relativePath] && ![request.URL query] && !self.PageID) {
-        return YES;
+    } else {
+        // Redirect with safari
+        [[UIApplication sharedApplication] openURL:request.URL];
+        return NO;
     }
-    
     return NO;
 }
 - (void)webView:(UIWebView *)webview didFailLoadWithError:(NSError *)error
@@ -476,11 +496,10 @@
         NSTimeInterval currentInterval = [[NSDate date] timeIntervalSinceDate:downloadDate];
         NSLog(@"Current interval = %f, Choosen Interval = %f", currentInterval, timer.timeInterval);
         
-        if (!cacheIsEnabled) {
-            if (currentInterval >= timer.timeInterval) {
-                // Download all
-                [appDel performSelectorInBackground:@selector(configureApp) withObject:appDel];
-            }
+        if (currentInterval >= timer.timeInterval) {
+            // Download all
+            appDel.autoRefresh = YES;
+            [appDel performSelectorInBackground:@selector(configureApp) withObject:appDel];
         }
     }
 }

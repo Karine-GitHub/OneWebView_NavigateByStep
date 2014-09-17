@@ -63,13 +63,6 @@
         
         [self.refresh selectRow:[self.intervalChoice integerValue]-1 inComponent:0 animated:YES];
         [self.refresh selectRow:iDuration inComponent:1 animated:YES];
-        
-        // Default values : 1 day
-    } else {
-        [self.refresh selectRow:0 inComponent:0 animated:YES];
-        self.intervalChoice = [self.intervalValues objectAtIndex:0];
-        [self.refresh selectRow:1 inComponent:1 animated:YES];
-        self.durationChoice = [self.durationValues objectAtIndex:1];
     }
 }
 

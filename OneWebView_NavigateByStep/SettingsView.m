@@ -93,13 +93,15 @@
             [NSThread sleepForTimeInterval:3.0];
             // Set Datas & Images Sizes
             self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue]];
-            self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images", APPLICATION_SUPPORT_PATH]] floatValue]];
+            self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images/", APPLICATION_SUPPORT_PATH]] floatValue]];
             [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+            [self.activity.activity stopAnimating];
+            [self.activity setHidden:YES];
             self.navigationItem.hidesBackButton = NO;
             // Alert user that downloading is finished
-            self.errorMsg = [NSString stringWithFormat:@"The downloading of files is done."];
-            UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Downloading Successful" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alertNoConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+                self.errorMsg = [NSString stringWithFormat:@"The downloading of files is done."];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Downloading Successful" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
         }
     }
 }
@@ -131,7 +133,7 @@
         self.reconfigNecessary = NO;
         
         self.SettingsTable.delegate = self;
-        
+
         // Set RefreshChoice text
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]) {
             char plural = [[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"] characterAtIndex:[[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"].length -1];
@@ -142,15 +144,13 @@
             } else {
                 self.refreshValue = [NSString stringWithFormat:@"%@ %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"], [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]];
             }
-        } else {
-            self.refreshValue = @"1 jour";
         }
         self.refreshChoice.text = self.refreshValue;
         
         // Set Datas & Images Sizes
         self.size = [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue];
         self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", self.size];
-        self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images", APPLICATION_SUPPORT_PATH]] floatValue]];
+        self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images/", APPLICATION_SUPPORT_PATH]] floatValue]];
         
         // Set Mode Cache
         if ([[NSUserDefaults standardUserDefaults] objectForKey:@"cache"]) {
@@ -170,7 +170,7 @@
         roamingIsEnabled = self.roamingMode.isOn;
         
         // If conflictual situation, block in Settings view
-        if ((self.cacheMode.isOn && self.size == 0.0) || (appDel.roamingSituation && !self.roamingMode.isOn)) {
+        if ((self.cacheMode.isOn && self.size == 0.0) || (appDel.roamingSituation && !self.roamingMode.isOn && self.size == 0.0)) {
             self.navigationItem.hidesBackButton = YES;
         } else {
             self.navigationItem.hidesBackButton = NO;
@@ -189,9 +189,9 @@
         cacheIsEnabled = self.cacheMode.isOn;
         self.reconfigNecessary = YES;
         if (self.cacheMode.isOn && self.size == 0.0) {
-            self.navigationItem.hidesBackButton = YES;
-        } else {
-            self.navigationItem.hidesBackButton = NO;
+            UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            alertConflict.message = @"Impossible to download content. The Cache mode is enabled : it blocks the downloading. Disable it for performing this action.";
+            [alertConflict show];
         }
     }
 }
@@ -200,10 +200,10 @@
     @synchronized(self){
         roamingIsEnabled = self.roamingMode.isOn;
         self.reconfigNecessary = YES;
-        if (appDel.roamingSituation && !self.roamingMode.isOn) {
-            self.navigationItem.hidesBackButton = YES;
-        } else {
-            self.navigationItem.hidesBackButton = NO;
+        if (appDel.roamingSituation && !self.roamingMode.isOn && self.size == 0.0) {
+            UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            alertConflict.message = @"Impossible to download content. The Roaming mode is disabled : it blocks the downloading. Enable it for performing this action.";
+            [alertConflict show];
         }
     }
 }
@@ -216,11 +216,20 @@
         @synchronized(self){
             if (self.cacheMode.isOn) {
                 UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-                alertConflict.message = @"Impossible to download content. The cache mode is enabled : it blocks the downloading. Disable it for performing this action.";
+                alertConflict.message = @"Impossible to download content. The Cache mode is enabled : it blocks the downloading. Disable it for performing this action.";
                 [alertConflict show];
             } else {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-                [self.navigationItem.backBarButtonItem setEnabled:NO];
+                
+                CGRect screenBound = [[UIScreen mainScreen] bounds];
+                if (!self.activity) {
+                    self.activity = [[CustomInfoView alloc] initWithFrame:CGRectMake((screenBound.size.width / 2)-125, (screenBound.size.height / 2)-50, 250, 100)];
+                }
+                [self.activity.infoLabel setText:@"Téléchargement en cours"];
+                [self.activity.activity startAnimating];
+                [self.activity setHidden:NO];
+                [self.view addSubview:self.activity];
+                
                 self.navigationItem.hidesBackButton = YES;
                 self.reconfigNecessary = YES;
                 // Download all
@@ -269,7 +278,7 @@
                 self.reconfigNecessary = YES;
                 // Refresh dataSize & imagesSize
                 self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue]];
-                self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images", APPLICATION_SUPPORT_PATH]] floatValue]];
+                self.imagesSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:[NSString stringWithFormat:@"%@Images/", APPLICATION_SUPPORT_PATH]] floatValue]];
             }
         }
     }
