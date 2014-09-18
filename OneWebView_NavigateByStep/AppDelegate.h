@@ -19,6 +19,7 @@ extern BOOL reloadApp;
 extern BOOL refreshByToolbar;
 extern BOOL cacheIsEnabled;
 extern BOOL roamingIsEnabled;
+extern BOOL roamingSituation;
 // END GLOBAL VARIABLES
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
@@ -30,7 +31,6 @@ extern BOOL roamingIsEnabled;
 
 // Settings
 @property BOOL autoRefresh;
-@property BOOL roamingSituation;
 @property NSNumber *refreshInterval;
 @property NSString *refreshDuration;
 @property NSDate *downloadDate;

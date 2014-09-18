@@ -36,5 +36,6 @@
 @property (strong, nonatomic) NSString *errorMsg;
 @property BOOL reconfigNecessary;
 @property BOOL goToRefresh;
+@property BOOL confirmation;
 
 @end

@@ -7,8 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CustomInfoView.h"
+#import "DynamicToolBar.h"
 
-@interface DisplayViewController : UIViewController <UIAlertViewDelegate, UITextViewDelegate, UISplitViewControllerDelegate, UIWebViewDelegate, UITabBarDelegate,ABUnknownPersonViewControllerDelegate>
+@interface DisplayViewController : UIViewController <UIAlertViewDelegate, UITextViewDelegate, UIWebViewDelegate,ABUnknownPersonViewControllerDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIWebView *Display;
 @property (strong, nonatomic) IBOutlet UIImageView *Img;
@@ -17,14 +19,16 @@
 @property NSString *PageID;
 @property NSString *NavigateTo;
 @property NSString *FeedID;
-@property long currentDetailsId;
-@property long itemsCount;
 
 @property (strong, nonatomic) UIAlertView *SettingsDone;
 @property (strong, nonatomic) UIActivityViewController *ShareActivity;
+@property CustomInfoView *customactivity;
+@property UIViewController *lastController;
 
 @property (strong,nonatomic) NSString *whereWasI;
-@property (strong,nonatomic) NSString *viewInfo; 
+@property (strong,nonatomic) NSString *viewInfo;
+
+@property BOOL isMenu;
 
 @property BOOL isConflictual;
 @property NSTimer *backgroundTimer;

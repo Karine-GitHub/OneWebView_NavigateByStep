@@ -15,6 +15,8 @@ BOOL forceDownloading;
 BOOL reloadApp;
 BOOL cacheIsEnabled;
 BOOL roamingIsEnabled;
+BOOL roamingSituation;
+
 
 // INFO : not manually throw exception here => cannot display alert view before shut down the application. More user friendly.
 
@@ -99,9 +101,9 @@ BOOL roamingIsEnabled;
     NSComparisonResult result = [carrierPlistPath compare:operatorPlistPath];
     
     if (result == NSOrderedSame) {
-        self.roamingSituation = NO;
+        roamingSituation = NO;
     } else {
-        self.roamingSituation = YES;
+        roamingSituation = YES;
     }
 }
 
@@ -158,13 +160,11 @@ BOOL roamingIsEnabled;
     NSError *err;
     NSArray *directories = [fm contentsOfDirectoryAtPath:path error:&err];
     for (NSString *file in directories) {
-        
         NSDictionary *attributes = [fm attributesOfItemAtPath:[NSString stringWithFormat:@"%@%@",path, file] error:&err];
         ull += [attributes fileSize];
         
         // Check if subdirectories
         if ([[attributes fileType] isEqualToString:NSFileTypeDirectory] && ![file isEqualToString:@"Images"]) {
-            NSLog(@"File : %@", file);
             NSArray *subdir = [fm contentsOfDirectoryAtPath:[NSString stringWithFormat:@"%@/%@",path, file] error:&err];
             for (NSString *subFiles in subdir) {
                 NSDictionary *attributes = [fm attributesOfItemAtPath:[NSString stringWithFormat:@"%@%@/%@",path, file, subFiles] error:&err];
@@ -244,7 +244,7 @@ BOOL roamingIsEnabled;
             if (![fileManager fileExistsAtPath:path] || forceDownloading || _autoRefresh || refreshByToolbar) {
                 if (!cacheIsEnabled) {
                     // Check if user is currently in Roaming Case
-                    if (self.roamingSituation) {
+                    if (roamingSituation) {
                         
                         // Check if user enable Roaming for our app
                         if (roamingIsEnabled) {
@@ -341,17 +341,19 @@ BOOL roamingIsEnabled;
     }
     if ([APPLICATION_FILE objectForKey:@"Pages"] != [NSNull null]) {
         for (NSMutableDictionary *allPages in [APPLICATION_FILE objectForKey:@"Pages"]) {
-            for (NSMutableDictionary *allPageDep in [allPages objectForKey:@"Dependencies"]) {
-                if ([allPageDep objectForKey:@"Url"] != [NSNull null] && [allPageDep objectForKey:@"Name"] != [NSNull null]) {
-                    [self saveFile:[allPageDep objectForKey:@"Url"] fileName:[allPageDep objectForKey:@"Name"]dirName:[allPageDep objectForKey:@"Path"]];
+            if ([allPages objectForKey:@"Dependencies"] != [NSNull null]) {
+                for (NSMutableDictionary *allPageDep in [allPages objectForKey:@"Dependencies"]) {
+                    if ([allPageDep objectForKey:@"Url"] != [NSNull null] && [allPageDep objectForKey:@"Name"] != [NSNull null]) {
+                        [self saveFile:[allPageDep objectForKey:@"Url"] fileName:[allPageDep objectForKey:@"Name"]dirName:[allPageDep objectForKey:@"Path"]];
+                    }
+                    else {
+                        NSLog(@"An error occured during the Search of %@'s dependencies : one or more parameters are null !", [allPages objectForKey:@"Name"]);
+                    }
                 }
-                else {
-                    NSLog(@"An error occured during the Search of %@'s dependencies : one or more parameters are null !", [allPages objectForKey:@"Name"]);
-                }
-            }
-            if ([allPages objectForKey:@"LogoUrl"] != [NSNull null]) {
-                    // Loading images
-                    [self saveFile:[allPages objectForKey:@"LogoUrl"] fileName:[allPages objectForKey:@"Name"] dirName:@"Images"];
+                /*if ([allPages objectForKey:@"LogoUrl"] != [NSNull null]) {
+                 // Loading images
+                 [self saveFile:[allPages objectForKey:@"LogoUrl"] fileName:[allPages objectForKey:@"Name"] dirName:@"Images"];
+                 }*/
             }
         }
     }
@@ -413,15 +415,16 @@ BOOL roamingIsEnabled;
                 self.downloadDate = [attributes fileModificationDate];
                 NSTimeInterval currentInterval = [[NSDate date] timeIntervalSinceDate:self.downloadDate];
                 // Get server config
-                NSTimeInterval interval = [[APPLICATION_FILE objectForKey:@"SynchronizationInterval"] longLongValue];
-                // Check if it's necessary to refresh datas
-                /*if (currentInterval > interval) {
-                    _autoRefresh = YES;
-                } else {*/
-                    _isDownloadedByFile = true;
-                    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.downloadDate forKey:@"downloadDate"]];
-                //}
-                
+                if ([APPLICATION_FILE objectForKey:@"SynchronizationInterval"] != [NSNull null]) {
+                    NSTimeInterval interval = [[APPLICATION_FILE objectForKey:@"SynchronizationInterval"] longLongValue];
+                    // Check if it's necessary to refresh datas
+                    if (currentInterval > interval) {
+                        _autoRefresh = YES;
+                    } else {
+                        _isDownloadedByFile = true;
+                        [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.downloadDate forKey:@"downloadDate"]];
+                    }
+                }
             }
             if (!_isDownloadedByFile|| forceDownloading || _autoRefresh || refreshByToolbar) {
                 NSLog(@"File does not exist or forceDownloading/autorefresh/refreshByToolbar is true");
@@ -429,7 +432,7 @@ BOOL roamingIsEnabled;
                 if (!cacheIsEnabled) {
                     
                     // Check if user is currently in Roaming Case
-                    if (self.roamingSituation) {
+                    if (roamingSituation) {
                         
                         // Check if user enable Roaming for our app
                         if (roamingIsEnabled) {

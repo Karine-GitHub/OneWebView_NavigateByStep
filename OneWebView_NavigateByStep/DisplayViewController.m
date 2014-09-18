@@ -34,15 +34,77 @@
 // Pas appelé lors du retour depuis les settings
 - (void) viewWillAppear:(BOOL)animated
 {
+    // sizeToFit ne fonctionne pas ici
     [super viewWillAppear:YES];
     
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    /*if ([self.navigationItem.title isEqualToString:@"Menu"]) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"SettingsModificationNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"NoModificationNotification" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(conflictIssue:) name:@"ConflictualSituationNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configureAppDone:) name:@"ConfigureAppNotification" object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+    }*/
+    self.navigationController.delegate = self;
+
+    if (self.isMenu || (!self.NavigateTo && !self.PageID)) {
+        self.navigationItem.hidesBackButton = YES;
+        self.navigationItem.rightBarButtonItem = nil;
+    } else {
+        self.navigationItem.hidesBackButton = NO;
+        UIImage *backToMenuIcon = [[UIImage imageNamed:@"BackButtonHome-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIBarButtonItem *backMenuIcon = [[UIBarButtonItem alloc] initWithImage:backToMenuIcon style:UIBarButtonItemStyleBordered target:self action:@selector(clickBackMenuIcon:)];
+        [self.navigationItem setRightBarButtonItem:backMenuIcon];
+    }
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+
+    if (self.isConflictual) {
+        if (!self.customactivity) {
+            self.customactivity = [[CustomInfoView alloc] initWithFrame:CGRectMake((screenBound.size.width / 2)-125, (screenBound.size.height / 2)-50, 250, 100)];
+            [self.view addSubview:self.customactivity];
+        }
+        [self.customactivity.infoLabel setText:@"Reconfiguration en cours"];
+        [self.customactivity.activity startAnimating];
+        [self.customactivity setHidden:NO];
+    } else if (reloadApp) {
+        if (!self.customactivity) {
+            self.customactivity = [[CustomInfoView alloc] initWithFrame:CGRectMake((screenBound.size.width / 2)-125, (screenBound.size.height / 2)-50, 250, 100)];
+            [self.view addSubview:self.customactivity];
+        }
+        [self.customactivity.infoLabel setText:@"Reconfiguration en cours"];
+        [self.customactivity.activity startAnimating];
+        [self.customactivity setHidden:NO];
+        
+        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
+        [self performSelectorInBackground:@selector(reloadApp) withObject:self];
+    } else {
+        [self.customactivity.activity stopAnimating];
+        [self.customactivity setHidden:YES];
+    }
+}
+// sizeToFit ne fonctionne pas ici
+-(void) viewDidAppear:(BOOL)animated
+{
+    //[self.Display sizeToFit];
+    //[self.Display.scrollView sizeToFit];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"SettingsModificationNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"NoModificationNotification" object:nil];
+    /*CGRect screenBound = [[UIScreen mainScreen] bounds];
+    float minHeight = screenBound.size.height - 38;
+    CGRect frameWebview = self.Display.frame;
+    CGRect frameScrollview = self.Display.scrollView.frame;
+    frameWebview.size.height = minHeight;
+    frameScrollview.size.height = minHeight;
+    [self.Display setFrame:frameWebview];
+    [self.Display.scrollView setFrame:frameScrollview];
+    [self.Display.scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height)];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(conflictIssue:) name:@"ConflictualSituationNotification" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configureAppDone:) name:@"ConfigureAppNotification" object:nil];
+    NSLog(@"WebView : %f", self.Display.frame.size.height);
+    NSLog(@"ScrollView : %f",self.Display.scrollView.frame.size.height);
+    NSLog(@"ContentSize : %f",self.Display.scrollView.contentSize.height);*/
 }
 
 - (void) viewWillDisappear:(BOOL)animated
@@ -56,14 +118,17 @@
 {
     @synchronized(self) {
         if ([notification.name isEqualToString:@"SettingsModificationNotification"]) {
-            reloadApp = YES;
-            [self viewDidLoad];
+            if (!reloadApp) {
+                reloadApp = YES;
+                [self initApp];
+            } else {
+                [self.customactivity.activity stopAnimating];
+                [self.customactivity setHidden:YES];
+            }
         } else {
             reloadApp = NO;
+            forceDownloading = NO;
             self.isConflictual = NO;
-            self.navigationItem.title = self.whereWasI;
-            self.Img.hidden = YES;
-            self.Display.hidden = NO;
         }
     }
 }
@@ -71,7 +136,7 @@
 {
     @synchronized(self){
         self.isConflictual = YES;
-        [self viewDidLoad];
+        [self initApp];
     }
 }
 - (void)configureAppDone:(NSNotification *)notification
@@ -84,14 +149,17 @@
                 @try {
                     [NSThread sleepForTimeInterval:3.0];
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-                    self.navigationItem.title = self.whereWasI;
                     // Alert user that downloading is finished
                     errorMsg = [NSString stringWithFormat:@"The new settings is now supported. The reconfiguration of the Application is done."];
                     self.SettingsDone = [[UIAlertView alloc] initWithTitle:@"Reconfiguration Successful" message:errorMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                     [self.SettingsDone performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
-                } @finally {
+                }
+                @finally {
+                    [appDel setDownloadIsFinished:NO];
                     reloadApp = NO;
                     forceDownloading = NO;
+                    [self.customactivity.activity stopAnimating];
+                    [self.customactivity setHidden:YES];
                 }
             }
         }
@@ -109,7 +177,8 @@
             appDel = (AppDelegate *)[[UIApplication sharedApplication] delegate];
         }
         reloadApp = YES;
-        [appDel configureApp];
+        //[appDel configureApp];
+        [appDel performSelectorInBackground:@selector(configureApp) withObject:self];
     }
 }
 
@@ -126,51 +195,33 @@
         
         // Do any additional setup after loading the view, typically from a nib.
         appDel = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        
+
         self.Display.delegate = self;
-        
-        if ([self.navigationItem.title isEqualToString:@"Menu"] || (!self.NavigateTo && !self.PageID)) {
-            self.navigationItem.hidesBackButton = YES;
-            self.navigationItem.rightBarButtonItem = nil;
-        } else {
-            self.navigationItem.hidesBackButton = NO;
-            UIImage *backToMenuIcon = [[UIImage imageNamed:@"BackButtonHome-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
-            UIBarButtonItem *backMenuIcon = [[UIBarButtonItem alloc] initWithImage:backToMenuIcon style:UIBarButtonItemStyleBordered target:self action:@selector(clickBackMenuIcon:)];
-            [self.navigationItem setRightBarButtonItem:backMenuIcon];
-        }
-        self.navigationItem.title = self.whereWasI;
-        
+        //self.navigationController.delegate = self;
         [self.Img setImage:[UIImage imageNamed:@"LaunchImage-700"]];
         
         [self.Display sizeToFit];
         [self.Display.scrollView sizeToFit];
-
-        CGFloat height = [[self.Display stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
+        CGRect screenBound = [[UIScreen mainScreen] bounds];
+        float minHeight = screenBound.size.height - 38;
         CGRect frameWebview = self.Display.frame;
         CGRect frameScrollview = self.Display.scrollView.frame;
-        frameWebview.size.height = height;
-        frameScrollview.size.height = height;
+        frameWebview.size.height = minHeight;
+        frameScrollview.size.height = minHeight;
         [self.Display setFrame:frameWebview];
         [self.Display.scrollView setFrame:frameScrollview];
-        [self.Display.scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height)];
-
+        /*CGFloat height = [[self.Display  stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
+         if (height != self.Display .frame.size.height) {
+         CGRect frameWebview = self.Display .frame;
+         CGRect frameScrollview = self.Display .scrollView.frame;
+         frameWebview.size.height = height;
+         frameScrollview.size.height = height;
+         [self.Display  setFrame:frameWebview];
+         [self.Display .scrollView setFrame:frameScrollview];
+         [self.Display .scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height)];
+         }*/
+        
         [self performSelectorInBackground:@selector(refreshApplicationByNewDownloading) withObject:self];
-        
-        if (self.isConflictual) {
-            self.navigationItem.title = @"Conflictual situation";
-            self.Img.hidden = NO;
-            self.Display.hidden = YES;
-        } else if (reloadApp) {
-            self.navigationItem.title = @"Reconfiguration in progress";
-            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-            self.Img.hidden = NO;
-            self.Display.hidden = YES;
-            [self performSelectorInBackground:@selector(reloadApp) withObject:self];
-        } else {
-            self.Img.hidden = YES;
-            self.Display.hidden = NO;
-        }
-        
         [self initApp];
     }
 }
@@ -184,12 +235,12 @@
         if (cacheIsEnabled && size == 0.0) {
             self.isConflictual = NO;
             alertConflict.message = @"Impossible to download content. The cache mode is enabled : it blocks the downloading. Do you want to disable it ?";
-            [alertConflict show];
-        } else if (appDel.roamingSituation && !roamingIsEnabled) {
+            [alertConflict performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+        } else if (roamingSituation && !roamingIsEnabled && size == 0.0) {
             self.isConflictual = NO;
             alertConflict.message = @"Impossible to download content. You are currently in Roaming case and the roaming mode is disabled : it blocks the downloading. Do you want to enable it ?";
-            [alertConflict show];
-        } else if (!self.Display.hidden) {
+            [alertConflict performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+        } else {
             UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Application fails" message:nil delegate:self cancelButtonTitle:@"Quit" otherButtonTitles:nil];
             if (appDel.isDownloadedByNetwork || appDel.isDownloadedByFile) {
                 if (APPLICATION_FILE != Nil) {
@@ -199,10 +250,10 @@
                 }
             } else if (!appDel.isDownloadedByNetwork) {
                 alertNoConnection.message = @"Impossible to download content on the server. The network connection is too low or off. The application will shut down. Please try later.";
-                [alertNoConnection show];
+                [alertNoConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             } else if (!appDel.isDownloadedByFile) {
                 alertNoConnection.message = @"Impossible to download content file. The application will shut down. Sorry for the inconvenience.";
-                [alertNoConnection show];
+                [alertNoConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             }
         }
     }
@@ -219,7 +270,6 @@
         NSURL *url = [NSURL fileURLWithPath:APPLICATION_SUPPORT_PATH isDirectory:YES];
         NSString *content = nil;
         NSString *path = nil;
-        NSString *externalUrl = nil;
         
         for (NSMutableDictionary *page in allPages) {
             if (pageId || [[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
@@ -233,49 +283,41 @@
                 }
                 
                 if (!pageId && !stepName && [[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
-                    if ([[page objectForKey:@"IsExternal"] isEqual:[NSNumber numberWithBool:YES]]) {
-                        externalUrl = [page objectForKey:@"ExternalUrl"];
-                    } else {
-                        NSDictionary *only = [pageSteps objectAtIndex:0];
-                        content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
-                        path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
-                        
-                        // Set Page's title
-                        self.navigationItem.title = [page objectForKey:@"Title"];
-                        // Set Toolbar
-                        [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[only objectForKey:@"ToolBarOptions"]]];
-                    }
+                    
+                    NSDictionary *only = [pageSteps objectAtIndex:0];
+                    content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                    path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
+                    self.isMenu = YES;
+                    // Set Page's title
+                    self.navigationItem.title = [page objectForKey:@"Title"];
+                    // Set Toolbar
+                    [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[only objectForKey:@"ToolBarOptions"]]];
+                    
                 } else if ([pageId isEqual:[page objectForKey:@"Id"]] && !stepName && ![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
-                    if ([[page objectForKey:@"IsExternal"] isEqual:[NSNumber numberWithBool:YES]]) {
-                        externalUrl = [page objectForKey:@"ExternalUrl"];
-                    } else {
-                        NSDictionary *only = [pageSteps objectAtIndex:0];
-                        content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
-                        path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
-                        
-                        // Set Page's title
-                        self.navigationItem.title = [page objectForKey:@"Title"];
-                        // Set Toolbar
-                        [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[only objectForKey:@"ToolBarOptions"]]];
-                    }
+                    NSDictionary *only = [pageSteps objectAtIndex:0];
+                    content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                    path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
+                    self.isMenu = NO;
+                    // Set Page's title
+                    self.navigationItem.title = [page objectForKey:@"Title"];
+                    // Set Toolbar
+                    [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[only objectForKey:@"ToolBarOptions"]]];
+                    
                 } else if ([pageId isEqual:[page objectForKey:@"Id"]] && stepName && feedId && ![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
-                    if ([[page objectForKey:@"IsExternal"] isEqual:[NSNumber numberWithBool:YES]]) {
-                        externalUrl = [page objectForKey:@"ExternalUrl"];
-                    } else {
-                        for (NSDictionary *step in pageSteps) {
-                            NSLog(@"Step : %@", [step objectForKey:@"Name"]);
-                            if ([stepName isEqual:[step objectForKey:@"Name"]]) {
-                                content = [AppDelegate createHTMLwithContent:[step objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
-                                path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [step objectForKey:@"Name"]];
-                                // Set Page's title
-                                self.navigationItem.title = [page objectForKey:@"Title"];
-                                // Set Toolbar
-                                [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[step objectForKey:@"ToolBarOptions"]]];
-                            }
+                    self.isMenu = NO;
+                    for (NSDictionary *step in pageSteps) {
+                        NSLog(@"Step : %@", [step objectForKey:@"Name"]);
+                        if ([stepName isEqual:[step objectForKey:@"Name"]]) {
+                            content = [AppDelegate createHTMLwithContent:[step objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                            path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [step objectForKey:@"Name"]];
+                            // Set Page's title
+                            self.navigationItem.title = [page objectForKey:@"Title"];
+                            // Set Toolbar
+                            [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[step objectForKey:@"ToolBarOptions"]]];
                         }
                     }
                 }
-                if ((content && path) || externalUrl) {
+                if ((content && path)) {
                     break;
                 }
             }
@@ -298,19 +340,10 @@
             if (pageId && stepName && feedId) {
                 NSString *urlWithQuery = [NSString stringWithFormat:@"%@?%@#%@", url, stepName, feedId];
                 url = [NSURL URLWithString:urlWithQuery];
-                NSString *result = [self.Display stringByEvaluatingJavaScriptFromString:@"getPageNavigationInfo()"];
-                NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
-                NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
-                // Set info for stepper
-                self.currentDetailsId = (long)[jsonResult objectForKey:@"currentItemIndex"];
-                self.itemsCount = (long)[jsonResult objectForKey:@"itemCount"];
                 // Set Page's title
-                self.navigationItem.title = [jsonResult objectForKey:@"text"];
+                //self.navigationItem.title = [jsonResult objectForKey:@"text"];
             }
             [self.Display loadHTMLString:content baseURL:url];
-        } else if (externalUrl) {
-           // Redirect with safari
-           [[UIApplication sharedApplication] openURL:[NSURL URLWithString:externalUrl]];
         }
     }
     @catch (NSException *exception) {
@@ -323,9 +356,6 @@
 #pragma mark - Web View
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
-    //self.Img.hidden = NO;
-    //self.Display.hidden = YES;
-    [self.Activity setHidden:NO];
     [self.Activity startAnimating];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 }
@@ -334,29 +364,33 @@
     [webView sizeToFit];
     [webView.scrollView sizeToFit];
     
-    if (![self.navigationItem.title isEqualToString:@"Menu"]) {
-        CGFloat height = [[webView stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
-        CGRect frameWebview = webView.frame;
-        CGRect frameScrollview = webView.scrollView.frame;
-        frameWebview.size.height = height + 150;
-        frameScrollview.size.height = height + 150;
-        [webView setFrame:frameWebview];
-        [webView.scrollView setFrame:frameScrollview];
-        [webView.scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height + 150)];
-    }
-
-    [self.Activity stopAnimating];
-    [self.Activity setHidden:YES];
-    //self.Img.hidden = YES;
-    //self.Display.hidden = NO;
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    CGFloat height = [[webView stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
+    /*if (height != webView.frame.size.height) {
+     CGRect frameWebview = webView.frame;
+     CGRect frameScrollview = webView.scrollView.frame;
+     frameWebview.size.height = height;
+     frameScrollview.size.height = height;
+     [webView setFrame:frameWebview];
+     [webView.scrollView setFrame:frameScrollview];
+     [webView.scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height)];
+     }*/
+    CGRect screenBound = [[UIScreen mainScreen] bounds];
+    float minHeight = screenBound.size.height - 38;
+    CGRect frameWebview = webView.frame;
+    CGRect frameScrollview = webView.scrollView.frame;
+    frameWebview.size.height = minHeight;
+    frameScrollview.size.height = minHeight;
+    [webView setFrame:frameWebview];
+    [webView.scrollView setFrame:frameScrollview];
+    //[webView.scrollView setContentSize:CGSizeMake(frameScrollview.size.width, frameScrollview.size.height)];
     
-    /*[UIView beginAnimations:@"animationID" context:nil];
-     [UIView setAnimationDuration:2.0f];
-     [UIView setAnimationCurve:UIViewAnimationCurveLinear];
-     [UIView setAnimationRepeatAutoreverses:NO];
-     [UIView setAnimationTransition:UIViewAnimationTransitionNone forView:self.view cache:YES];
-     [UIView commitAnimations];*/
+    /*NSLog(@"Height : %f",height);
+     NSLog(@"WebView : %f", webView.frame.size.height);
+     NSLog(@"ScrollView : %f",webView.scrollView.frame.size.height);
+     NSLog(@"ContentSize : %f",webView.scrollView.contentSize.height);*/
+    
+    [self.Activity stopAnimating];
+    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -369,14 +403,11 @@
     
     // Menu vers actualités : http://goto/?9104542f-9459-4e37-b81e-15bc4dcd0102
     // Actu2 vers detailsActu2 : http://gotostep/?Step2.Mobile.html?Id=0004542f-9459-4e37-b81e-15bc4dcd9901&
-    
-    
-    
+
     long index = [APPLICATION_SUPPORT_PATH length] - 1;
     NSString *path = [APPLICATION_SUPPORT_PATH substringToIndex:index];
     NSString *longPath;
     
-    self.whereWasI = self.navigationItem.title;
     
     if (self.NavigateTo && self.PageID) {
         longPath = [NSString stringWithFormat:@"%@/%@", path, self.NavigateTo];
@@ -412,7 +443,19 @@
             displayView.FeedID = [[request.URL query] substringFromIndex:pointSeparator.location +1];
             displayView.PageID = self.PageID;
         }
+        
+        NSString *result = [webView stringByEvaluatingJavaScriptFromString:@"getPageNavigationInfo()"];
+        NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+        NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
+        itemCount = [[jsonResult objectForKey:@"itemCount"] doubleValue];
+        currentStepValue = [[jsonResult objectForKey:@"currentItemIndex"] doubleValue];
+
+        
         [self.navigationController pushViewController:displayView animated:YES];
+        return NO;
+    } else if ([request.URL query] != nil && [[request.URL host] isEqualToString:@"gotoexternalurl"]) {
+        // Redirect with safari
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[request.URL query]]];
         return NO;
     } else if ([request.URL query] != nil && [[request.URL host] isEqualToString:@"backtostep"]) {
         // HTML back button => simulate back button click in navigation bar
@@ -458,8 +501,26 @@
         
     } else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"OK"]) {
         self.isConflictual = NO;
-        self.Img.hidden = YES;
-        self.Display.hidden = NO;
+    }
+}
+
+#pragma mark - unknown Person ViewController
+- (void)unknownPersonViewController:(ABUnknownPersonViewController *)unknownCardViewController didResolveToPerson:(ABRecordRef)person
+{
+    
+}
+
+-(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if ([viewController isKindOfClass:[SettingsView class]]) {
+        self.lastController = viewController;
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"SettingsModificationNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"NoModificationNotification" object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(conflictIssue:) name:@"ConflictualSituationNotification" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(configureAppDone:) name:@"ConfigureAppNotification" object:nil];
     }
 }
 
@@ -506,11 +567,7 @@
 
 - (void)clickBackMenuIcon:(id)sender
 {
-    DisplayViewController *displayView = (DisplayViewController*) [self.storyboard instantiateViewControllerWithIdentifier:@"displayView"];
-    displayView.NavigateTo = nil;
-    displayView.PageID = nil;
-    displayView.FeedID = nil;
-    [self.navigationController pushViewController:displayView animated:YES];
+    [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
 @end

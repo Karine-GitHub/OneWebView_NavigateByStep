@@ -10,6 +10,9 @@
 #import "AppDelegate.h"
 #import "DisplayViewController.h"
 
+double currentStepValue;
+double itemCount;
+
 @implementation DynamicToolBar
 
 + (UIToolbar *) createToolBarIn:(UIView *)parentView withSteps:(NSDictionary *)steps
@@ -126,13 +129,18 @@
     
     if ([[steps valueForKey:@"AllowPageNavigation"] isEqual:[NSNumber numberWithBool:YES]]) {
         DisplayViewController *controller = (DisplayViewController *)[parentView nextResponder];
+        
+       /*NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getPageNavigationInfo()"];
+       NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
+       NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];*/
+        
         UIStepper *navigate = [[UIStepper alloc] init];
         [navigate setMinimumValue:0];
-        [navigate setMaximumValue:(double)controller.itemsCount];
-        [navigate setValue:(double)controller.currentDetailsId];
+        [navigate setMaximumValue:itemCount];
+        [navigate setValue:currentStepValue];
         [navigate addTarget:self action:@selector(navigateClick:) forControlEvents:UIControlEventValueChanged];
-        [navigate setIncrementImage:[UIImage imageNamed:@"arrow-up-free.png"] forState:UIControlStateNormal];
-        [navigate setDecrementImage:[UIImage imageNamed:@"arrow-down-free.png"] forState:UIControlStateNormal];
+        [navigate setIncrementImage:[UIImage imageNamed:@"arrow-down-free.png"] forState:UIControlStateNormal];
+        [navigate setDecrementImage:[UIImage imageNamed:@"arrow-up-free.png"] forState:UIControlStateNormal];
         UIBarButtonItem *stepperContainer = [[UIBarButtonItem alloc] initWithCustomView:navigate];
         [toolBarItems addObject:stepperContainer];
     }
@@ -177,7 +185,7 @@
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
     
-    [controller.Display stringByEvaluatingJavaScriptFromString:@"Sort()"];
+    [controller.Display stringByEvaluatingJavaScriptFromString:@"sort()"];
 }
 
 + (void) shareClick:(id)sender
@@ -437,12 +445,12 @@
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
     
-    if (sender.value > controller.currentDetailsId ) {
-        [controller.Display stringByEvaluatingJavaScriptFromString:@"ViewNextDetails()"];
+    if (sender.value > currentStepValue) {
+        [controller.Display stringByEvaluatingJavaScriptFromString:@"viewNextDetails()"];
     } else {
-        [controller.Display stringByEvaluatingJavaScriptFromString:@"ViewPreviousDetails()"];
+        [controller.Display stringByEvaluatingJavaScriptFromString:@"viewPreviousDetails()"];
     }
-    controller.currentDetailsId = sender.value;
+    currentStepValue = sender.value;
 }
 
 

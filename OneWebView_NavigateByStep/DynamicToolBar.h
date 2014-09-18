@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 
 static BOOL addInCalendar;
-static double currentStepValue;
+extern double currentStepValue;
+extern double itemCount;
 
 @interface DynamicToolBar : NSObject
 
