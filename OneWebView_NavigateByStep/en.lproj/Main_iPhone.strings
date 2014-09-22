@@ -1,0 +1,54 @@
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "8SP-kd-FQy"; */
+"8SP-kd-FQy.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "Taille des données"; ObjectID = "DzN-Px-6mf"; */
+"DzN-Px-6mf.text" = "Taille des données";
+
+/* Class = "IBUILabel"; text = "Mode Cache"; ObjectID = "Jtn-N5-XUr"; */
+"Jtn-N5-XUr.text" = "Mode Cache";
+
+/* Class = "IBUILabel"; text = "Charger toutes les données"; ObjectID = "Ui8-JX-j20"; */
+"Ui8-JX-j20.text" = "Charger toutes les données";
+
+/* Class = "IBUIBarButtonItem"; title = "Préférences"; ObjectID = "W2l-Bl-In8"; */
+"W2l-Bl-In8.title" = "Préférences";
+
+/* Class = "IBUILabel"; text = "Taille des images"; ObjectID = "YNe-bh-tUk"; */
+"YNe-bh-tUk.text" = "Taille des images";
+
+/* Class = "IBUILabel"; text = "Roaming"; ObjectID = "apf-Tf-diw"; */
+"apf-Tf-diw.text" = "Roaming";
+
+/* Class = "IBUITableViewSection"; headerTitle = "DONNÉES"; ObjectID = "dW1-jL-e8h"; */
+"dW1-jL-e8h.headerTitle" = "DONNÉES";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "g8f-aH-cs2"; */
+"g8f-aH-cs2.text" = "Label";
+
+/* Class = "IBUILabel"; text = "Déterminez le délai de rafraîchissement des données."; ObjectID = "g8l-4f-LKP"; */
+"g8l-4f-LKP.text" = "Déterminez le délai de rafraîchissement des données.";
+
+/* Class = "IBUINavigationItem"; title = "Rafraîchissement"; ObjectID = "hhz-NP-Z5X"; */
+"hhz-NP-Z5X.title" = "Rafraîchissement";
+
+/* Class = "IBUILabel"; text = "Gérer mes services"; ObjectID = "ong-U3-P4f"; */
+"ong-U3-P4f.text" = "Gérer mes services";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "qJU-cG-cty"; */
+"qJU-cG-cty.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "Rafraîchissement"; ObjectID = "rVV-F2-i97"; */
+"rVV-F2-i97.text" = "Rafraîchissement";
+
+/* Class = "IBUINavigationItem"; title = "Préférences"; ObjectID = "vno-tr-cah"; */
+"vno-tr-cah.title" = "Préférences";
+
+/* Class = "IBUITableViewSection"; headerTitle = "SERVICES"; ObjectID = "w0S-LA-tva"; */
+"w0S-LA-tva.headerTitle" = "SERVICES";
+
+/* Class = "IBUITableViewSection"; headerTitle = "CACHE"; ObjectID = "wzn-Vd-1RW"; */
+"wzn-Vd-1RW.headerTitle" = "CACHE";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "x8I-93-gaB"; */
+"x8I-93-gaB.text" = "Detail";

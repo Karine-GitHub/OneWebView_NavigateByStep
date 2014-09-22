@@ -1,0 +1,54 @@
+
+/* Class = "IBUILabel"; text = "Déterminez le délai de rafraîchissement des données."; ObjectID = "0wk-gg-HlV"; */
+"0wk-gg-HlV.text" = "Déterminez le délai de rafraîchissement des données.";
+
+/* Class = "IBUILabel"; text = "Roaming"; ObjectID = "2sT-Ju-QcK"; */
+"2sT-Ju-QcK.text" = "Roaming";
+
+/* Class = "IBUILabel"; text = "Charger toutes les données"; ObjectID = "3Sm-kR-eyM"; */
+"3Sm-kR-eyM.text" = "Charger toutes les données";
+
+/* Class = "IBUILabel"; text = "Gérer mes services"; ObjectID = "3sH-V6-oKp"; */
+"3sH-V6-oKp.text" = "Gérer mes services";
+
+/* Class = "IBUITableViewSection"; headerTitle = "CACHE"; ObjectID = "4wM-qG-hSb"; */
+"4wM-qG-hSb.headerTitle" = "CACHE";
+
+/* Class = "IBUILabel"; text = "Mode Cache"; ObjectID = "8WT-df-Ezi"; */
+"8WT-df-Ezi.text" = "Mode Cache";
+
+/* Class = "IBUINavigationItem"; title = "Préférences"; ObjectID = "9Lx-eS-lx1"; */
+"9Lx-eS-lx1.title" = "Préférences";
+
+/* Class = "IBUILabel"; text = "Taille des images"; ObjectID = "HV4-zA-GA7"; */
+"HV4-zA-GA7.text" = "Taille des images";
+
+/* Class = "IBUIBarButtonItem"; title = "Préférences"; ObjectID = "JUl-8u-Rdb"; */
+"JUl-8u-Rdb.title" = "Préférences";
+
+/* Class = "IBUINavigationItem"; title = "Rafraîchissement"; ObjectID = "L3n-Fc-OlO"; */
+"L3n-Fc-OlO.title" = "Rafraîchissement";
+
+/* Class = "IBUITableViewSection"; headerTitle = "DONNÉES"; ObjectID = "Lxp-kz-rEo"; */
+"Lxp-kz-rEo.headerTitle" = "DONNÉES";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "XWF-OZ-Ie4"; */
+"XWF-OZ-Ie4.text" = "Detail";
+
+/* Class = "IBUILabel"; text = "Taille des données"; ObjectID = "eDn-0V-TZM"; */
+"eDn-0V-TZM.text" = "Taille des données";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "i27-N5-rjQ"; */
+"i27-N5-rjQ.text" = "Detail";
+
+/* Class = "IBUITableViewSection"; headerTitle = "SERVICES"; ObjectID = "i83-k7-anc"; */
+"i83-k7-anc.headerTitle" = "SERVICES";
+
+/* Class = "IBUILabel"; text = "Rafraîchissement"; ObjectID = "koY-0p-XaG"; */
+"koY-0p-XaG.text" = "Rafraîchissement";
+
+/* Class = "IBUILabel"; text = "Label"; ObjectID = "oz9-3w-tSt"; */
+"oz9-3w-tSt.text" = "Label";
+
+/* Class = "IBUILabel"; text = "Detail"; ObjectID = "vgK-cF-Dyb"; */
+"vgK-cF-Dyb.text" = "Detail";
