@@ -39,7 +39,7 @@
     
     /*if ([self.navigationItem.title isEqualToString:@"Menu"]) {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"SettingsModificationNotification" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"NoModificationNotification" object:nil];
         
@@ -48,6 +48,7 @@
     } else {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
     }*/
+
     self.navigationController.delegate = self;
 
     if (self.isMenu || (!self.NavigateTo && !self.PageID)) {
@@ -84,6 +85,10 @@
     } else {
         [self.customactivity.activity stopAnimating];
         [self.customactivity setHidden:YES];
+        if (!self.Display.isLoading) {
+            [self.Activity stopAnimating];
+            [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        }
     }
 }
 // sizeToFit ne fonctionne pas ici
@@ -118,13 +123,10 @@
 {
     @synchronized(self) {
         if ([notification.name isEqualToString:@"SettingsModificationNotification"]) {
-            if (!reloadApp) {
+            //if (!reloadApp) {
                 reloadApp = YES;
                 [self initApp];
-            } else {
-                [self.customactivity.activity stopAnimating];
-                [self.customactivity setHidden:YES];
-            }
+            //}
         } else {
             reloadApp = NO;
             forceDownloading = NO;
@@ -150,12 +152,12 @@
                     [NSThread sleepForTimeInterval:3.0];
                     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
                     // Alert user that downloading is finished
-                    errorMsg = [NSString stringWithFormat:@"The new settings is now supported. The reconfiguration of the Application is done."];
-                    self.SettingsDone = [[UIAlertView alloc] initWithTitle:@"Reconfiguration Successful" message:errorMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                    errorMsg = [NSString stringWithFormat:@"Les nouveaux paramètres ont bien été pris en compte. La reconfiguration de l'application est terminée."];
+                    self.SettingsDone = [[UIAlertView alloc] initWithTitle:@"Reconfiguration Réussie" message:errorMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                     [self.SettingsDone performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
                 }
                 @finally {
-                    [appDel setDownloadIsFinished:NO];
+                    //[appDel setDownloadIsFinished:NO];
                     reloadApp = NO;
                     forceDownloading = NO;
                     [self.customactivity.activity stopAnimating];
@@ -167,7 +169,6 @@
 }
 #pragma mark END OF NOTIFICATIONS
 
-
 - (void)reloadApp
 {
     @synchronized(self) {
@@ -177,7 +178,6 @@
             appDel = (AppDelegate *)[[UIApplication sharedApplication] delegate];
         }
         reloadApp = YES;
-        //[appDel configureApp];
         [appDel performSelectorInBackground:@selector(configureApp) withObject:self];
     }
 }
@@ -230,18 +230,18 @@
 {
     // Get Application json file
     @try {
-        UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Settings",nil];
+        UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Situation Conflictuelle" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"Paramètres",nil];
         float size = [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue];
         if (cacheIsEnabled && size == 0.0) {
             self.isConflictual = NO;
-            alertConflict.message = @"Impossible to download content. The cache mode is enabled : it blocks the downloading. Do you want to disable it ?";
+            alertConflict.message = @"Impossible de télécharger le contenu car le mode Cache est activé. Souhaitez-vous le désactiver ?";
             [alertConflict performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
         } else if (roamingSituation && !roamingIsEnabled && size == 0.0) {
             self.isConflictual = NO;
-            alertConflict.message = @"Impossible to download content. You are currently in Roaming case and the roaming mode is disabled : it blocks the downloading. Do you want to enable it ?";
+            alertConflict.message = @"Impossible de télécharger le contenu car le mode Roaming est desactivé. Souhaitez-vous l'activer ? ?";
             [alertConflict performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
         } else {
-            UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Application fails" message:nil delegate:self cancelButtonTitle:@"Quit" otherButtonTitles:nil];
+            UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Echec de l'Application" message:nil delegate:self cancelButtonTitle:@"Quitter" otherButtonTitles:nil];
             if (appDel.isDownloadedByNetwork || appDel.isDownloadedByFile) {
                 if (APPLICATION_FILE != Nil) {
                     appDependencies = [APPLICATION_FILE objectForKey:@"Dependencies"];
@@ -249,17 +249,17 @@
                     [self configureViewWithPageID:self.PageID withStepName:self.NavigateTo withFeedId:self.FeedID];
                 }
             } else if (!appDel.isDownloadedByNetwork) {
-                alertNoConnection.message = @"Impossible to download content on the server. The network connection is too low or off. The application will shut down. Please try later.";
+                alertNoConnection.message = @"Impossible de télécharger le contenu sur le serveur. La connexion internet est trop faible ou coupée. L'application va se fermer.";
                 [alertNoConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             } else if (!appDel.isDownloadedByFile) {
-                alertNoConnection.message = @"Impossible to download content file. The application will shut down. Sorry for the inconvenience.";
+                alertNoConnection.message = @"Impossible de charger le contenu de l'application. L'application va se fermer. Veuillez nous excuser pour le désagrément.";
                 [alertNoConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             }
         }
     }
     @catch (NSException *e) {
-        errorMsg = [NSString stringWithFormat:@"An error occured during the Loading of the Application : %@, reason : %@", e.name, e.reason];
-        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Application fails" message:errorMsg delegate:self cancelButtonTitle:@"Quit" otherButtonTitles:nil];
+        errorMsg = [NSString stringWithFormat:@"Une erreur est survenue lors du chargement de l'application : %@, reason : %@", e.name, e.reason];
+        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Echec de l'Application" message:errorMsg delegate:self cancelButtonTitle:@"Quitter" otherButtonTitles:nil];
         [alertNoConnection show];
     }
 }
@@ -268,8 +268,8 @@
 {
     @try {
         NSURL *url = [NSURL fileURLWithPath:APPLICATION_SUPPORT_PATH isDirectory:YES];
-        NSString *content = nil;
-        NSString *path = nil;
+        self.content = nil;
+        self.path = nil;
         
         for (NSMutableDictionary *page in allPages) {
             if (pageId || [[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
@@ -285,8 +285,8 @@
                 if (!pageId && !stepName && [[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
                     
                     NSDictionary *only = [pageSteps objectAtIndex:0];
-                    content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
-                    path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
+                    self.content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                    self.path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
                     self.isMenu = YES;
                     // Set Page's title
                     self.navigationItem.title = [page objectForKey:@"Title"];
@@ -295,8 +295,8 @@
                     
                 } else if ([pageId isEqual:[page objectForKey:@"Id"]] && !stepName && ![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
                     NSDictionary *only = [pageSteps objectAtIndex:0];
-                    content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
-                    path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
+                    self.content = [AppDelegate createHTMLwithContent:[only objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                    self.path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [only objectForKey:@"Name"]];
                     self.isMenu = NO;
                     // Set Page's title
                     self.navigationItem.title = [page objectForKey:@"Title"];
@@ -304,12 +304,13 @@
                     [self.view addSubview:[DynamicToolBar createToolBarIn:self.view withSteps:[only objectForKey:@"ToolBarOptions"]]];
                     
                 } else if ([pageId isEqual:[page objectForKey:@"Id"]] && stepName && feedId && ![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
+                    //NSLog(@"Page : %@  / Step : %@  / Feed : %@", pageId, stepName, feedId);
                     self.isMenu = NO;
                     for (NSDictionary *step in pageSteps) {
-                        NSLog(@"Step : %@", [step objectForKey:@"Name"]);
+                        //NSLog(@"Step : %@", [step objectForKey:@"Name"]);
                         if ([stepName isEqual:[step objectForKey:@"Name"]]) {
-                            content = [AppDelegate createHTMLwithContent:[step objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
-                            path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [step objectForKey:@"Name"]];
+                            self.content = [AppDelegate createHTMLwithContent:[step objectForKey:@"HtmlContent"] withAppDep:appDependencies withPageDep:pageDependencies];
+                            self.path = [NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, [step objectForKey:@"Name"]];
                             // Set Page's title
                             self.navigationItem.title = [page objectForKey:@"Title"];
                             // Set Toolbar
@@ -317,38 +318,39 @@
                         }
                     }
                 }
-                if ((content && path)) {
+                if (self.content && self.path) {
                     break;
                 }
             }
         }
-        if (content && path) {
+        if (self.content && self.path) {
             // Present html content
             BOOL success = false;
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSError *error = [[NSError alloc] init];
-            NSData *data = [content dataUsingEncoding:NSUTF8StringEncoding];
-            success = [fileManager createFileAtPath:path contents:data attributes:nil];
+            NSData *data = [self.content dataUsingEncoding:NSUTF8StringEncoding];
+            success = [fileManager createFileAtPath:self.path contents:data attributes:nil];
             if (!success) {
                 NSLog(@"An error occured during the Saving of the html file : %@", error);
                 NSException *e = [NSException exceptionWithName:error.localizedDescription reason:error.localizedFailureReason userInfo:error.userInfo];
                 @throw e;
             }
-            self.viewInfo = [NSString stringWithFormat:@"%@?%@", self.NavigateTo, self.PageID];
             
             // Load HTML
             if (pageId && stepName && feedId) {
                 NSString *urlWithQuery = [NSString stringWithFormat:@"%@?%@#%@", url, stepName, feedId];
                 url = [NSURL URLWithString:urlWithQuery];
-                // Set Page's title
-                //self.navigationItem.title = [jsonResult objectForKey:@"text"];
+                if (self.pageDetailsTitle) {
+                    self.navigationItem.title = self.pageDetailsTitle;
+                    self.navigationItem.backBarButtonItem.title = self.previousPageTitle;
+                }
             }
-            [self.Display loadHTMLString:content baseURL:url];
+            [self.Display loadHTMLString:self.content baseURL:url];
         }
     }
     @catch (NSException *exception) {
-        errorMsg = [NSString stringWithFormat:@"An error occured during the Configuration of the view Menu : %@, reason : %@", exception.name, exception.reason];
-        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Application fails" message:errorMsg delegate:self cancelButtonTitle:@"Quit" otherButtonTitles:nil];
+        errorMsg = [NSString stringWithFormat:@"Une erreur est survenue lors de la configuration de l'application : %@, raison : %@", exception.name, exception.reason];
+        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Echec de l'Application" message:errorMsg delegate:self cancelButtonTitle:@"Quitter" otherButtonTitles:nil];
         [alertNoConnection show];
     }
 }
@@ -356,8 +358,10 @@
 #pragma mark - Web View
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
-    [self.Activity startAnimating];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    if ([AppDelegate testConnection]) {
+        [self.Activity startAnimating];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+    }
 }
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
@@ -388,9 +392,10 @@
      NSLog(@"WebView : %f", webView.frame.size.height);
      NSLog(@"ScrollView : %f",webView.scrollView.frame.size.height);
      NSLog(@"ContentSize : %f",webView.scrollView.contentSize.height);*/
-    
-    [self.Activity stopAnimating];
-    [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    if ([AppDelegate testConnection]) {
+        [self.Activity stopAnimating];
+        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+    }
 }
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
@@ -406,15 +411,9 @@
 
     long index = [APPLICATION_SUPPORT_PATH length] - 1;
     NSString *path = [APPLICATION_SUPPORT_PATH substringToIndex:index];
-    NSString *longPath;
     
-    
-    if (self.NavigateTo && self.PageID) {
-        longPath = [NSString stringWithFormat:@"%@/%@", path, self.NavigateTo];
-    }
-    
-    /*NSLog(@"URL : %@", request.URL);
-     NSLog(@"Query : %@", [request.URL query]);
+    NSLog(@"URL : %@", request.URL);
+     /*NSLog(@"Query : %@", [request.URL query]);
      NSLog(@"Relative path : %@", [request.URL relativePath]);
      NSLog(@"Host : %@", [request.URL host]);
      NSLog(@"Navigation type : %d", navigationType);*/
@@ -447,9 +446,17 @@
         NSString *result = [webView stringByEvaluatingJavaScriptFromString:@"getPageNavigationInfo()"];
         NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
         NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];
-        itemCount = [[jsonResult objectForKey:@"itemCount"] doubleValue];
-        currentStepValue = [[jsonResult objectForKey:@"currentItemIndex"] doubleValue];
-
+        if ([jsonResult objectForKey:@"itemCount"] != [NSNull null]) {
+            itemCount = [[jsonResult objectForKey:@"itemCount"] doubleValue] - 1;
+        }
+        if ([jsonResult objectForKey:@"currentItemIndex"] != [NSNull null]) {
+                currentStepValue = [[jsonResult objectForKey:@"currentItemIndex"] doubleValue];
+        }
+        if ([jsonResult objectForKey:@"text"] != [NSNull null]) {
+            // Set Page's title
+            displayView.previousPageTitle =  self.navigationItem.title;
+            displayView.pageDetailsTitle = [jsonResult objectForKey:@"text"];
+        }
         
         [self.navigationController pushViewController:displayView animated:YES];
         return NO;
@@ -463,7 +470,7 @@
         return NO;
     } else if ([[request.URL host] isEqualToString:@"gotomenu"]) {
         // HTML back button => simulate back button click in navigation bar
-        [[self navigationController] popViewControllerAnimated:YES];
+        [self.navigationController popToRootViewControllerAnimated:YES];
         return NO;
     } else {
         // Redirect with safari
@@ -475,7 +482,7 @@
 - (void)webView:(UIWebView *)webview didFailLoadWithError:(NSError *)error
 {
     [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
-    errorMsg = [NSString stringWithFormat:@"<html><center><font size=+4 color='red'>An error occured :<br>%@</font></center></html>", error.localizedDescription];
+    errorMsg = [NSString stringWithFormat:@"<html><center><font size=+4 color='red'>Une erreur est survenue :<br>%@</font></center></html>", error.localizedDescription];
     [self.Display loadHTMLString:[AppDelegate createHTMLwithContent:errorMsg withAppDep:nil withPageDep:nil] baseURL:nil];
 }
 
@@ -490,7 +497,7 @@
         // Wait while app is going background
         [NSThread sleepForTimeInterval:2.0];
         exit(0);
-    } else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Settings"]) {
+    } else if ([[alertView buttonTitleAtIndex:buttonIndex] isEqualToString:@"Paramètres"]) {
         // Go to settings
         self.isConflictual = NO;
         
@@ -513,7 +520,6 @@
 -(void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     if ([viewController isKindOfClass:[SettingsView class]]) {
-        self.lastController = viewController;
         [[NSNotificationCenter defaultCenter] removeObserver:self];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(settingsDone:) name:@"SettingsModificationNotification" object:nil];
@@ -528,18 +534,10 @@
 - (void) refreshApplicationByNewDownloading
 {
     @synchronized(self){
-        if (appDel == Nil) {
-            appDel = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-        }
-        long interval;
-        if ([appDel.refreshDuration isEqualToString:@"heure"]) {
-            interval= [appDel.refreshInterval doubleValue] * 60 * 60;
-        } else if ([appDel.refreshDuration isEqualToString:@"jour"]) {
-            interval = [appDel.refreshInterval integerValue] * 60 * 60 * 24;
-        }
+        long long interval = [AppDelegate getRefreshInfo];
         
         if (self.backgroundTimer.timeInterval != interval) {
-            self.backgroundTimer = [NSTimer timerWithTimeInterval:[appDel.refreshInterval integerValue] * 60 target:self selector:@selector(forceDownloadingApplication:) userInfo:nil repeats:YES];
+            self.backgroundTimer = [NSTimer timerWithTimeInterval:interval target:self selector:@selector(forceDownloadingApplication:) userInfo:nil repeats:YES];
             [[NSRunLoop currentRunLoop] addTimer:self.backgroundTimer forMode:NSRunLoopCommonModes];
         }
     }

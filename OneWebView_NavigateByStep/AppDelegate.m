@@ -16,18 +16,17 @@ BOOL reloadApp;
 BOOL cacheIsEnabled;
 BOOL roamingIsEnabled;
 BOOL roamingSituation;
-
+BOOL isDisconnect;
 
 // INFO : not manually throw exception here => cannot display alert view before shut down the application. More user friendly.
 
 @implementation AppDelegate
 
-- (BOOL) testConnection
++ (BOOL) testConnection
 {
     // Set the host
     Reachability *checkConnection = [Reachability reachabilityForInternetConnection];
     NetworkStatus networkStatus = [checkConnection currentReachabilityStatus];
-    
     
     BOOL isConnected = false;
     switch (networkStatus) {
@@ -57,7 +56,7 @@ BOOL roamingSituation;
     return isConnected;
 }
 
-- (BOOL) testFastConnection
++ (BOOL) testFastConnection
 {
     BOOL isFast = false;
     CTTelephonyNetworkInfo *info = [[CTTelephonyNetworkInfo alloc] init];
@@ -107,18 +106,24 @@ BOOL roamingSituation;
     }
 }
 
-+ (BOOL) serviceStatusFor:(NSString *)statusName
++ (CellStyle) serviceStatusFor:(NSString *)statusName
 {
     for (NSMutableDictionary *page in [APPLICATION_FILE objectForKey:@"Pages"]) {
         if (![[page objectForKey:@"TemplateType"] isEqualToString:@"Menu"]) {
             if ([statusName isEqual:[page objectForKey:@"Title"]]) {
-                if ([[NSUserDefaults standardUserDefaults] objectForKey:statusName]) {
-                    return [[NSUserDefaults standardUserDefaults] boolForKey:statusName];
-                }
+                /*if ([[page objectForKey:@"Title"] isEqual:[NSNumber [NSNumber numberWithInteger:3]]) {
+                    return CellStyleBlocked;
+                } else if ([[[NSUserDefaults standardUserDefaults] objectForKey:statusName] isEqual:[NSNumber numberWithInteger:0]]) {
+                    return CellStyleIsOn;
+                } else if ([[[NSUserDefaults standardUserDefaults] objectForKey:statusName] isEqual:[NSNumber numberWithInteger:1]]) {
+                    return CellstyleIsOff;
+                }*/
             }
         }
     }
-    return NO;
+    // Par défaut isOn
+    // Pour les tests tant que pas propriété, tout mettre bloqué
+    return CellStyleBlocked;
 }
 
 + (NSString *)createHTMLwithContent:(NSString *)htmlContent withAppDep:(NSArray *)appDep withPageDep:(NSArray *)pageDep
@@ -187,6 +192,23 @@ BOOL roamingSituation;
     return number;
 }
 
++(long long)getRefreshInfo
+{
+    long long interval;
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]) {
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"] isEqualToString:@"heure"]) {
+            interval= [[[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] longLongValue] * 60 * 60;
+        } else if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"] isEqualToString:@"jour"]) {
+            interval = [[[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] integerValue] * 60 * 60 * 24;
+        }
+    } else {
+        if ([APPLICATION_FILE objectForKey:@"SynchronizationInterval"] != [NSNull null]) {
+            interval = [[APPLICATION_FILE objectForKey:@"SynchronizationInterval"] longLongValue];
+        }
+    }
+    return interval;
+}
+
 - (void) saveFile:(NSString *)url fileName:(NSString *)fileName dirName:(NSString*)dirName
 {
     @try {
@@ -214,17 +236,17 @@ BOOL roamingSituation;
                     if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, firstDir] isDirectory:&isDirectory] || forceDownloading || _autoRefresh || refreshByToolbar) {
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, firstDir] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
-                            NSLog(@"An error occured during the Creation of Template folder : %@", error);
+                            NSLog(@"Une erreur est survenue lors de la Création du dossier  : %@", error);
                         }
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
-                            NSLog(@"An error occured during the Creation of Template folder : %@", error);
+                            NSLog(@"Une erreur est survenue lors de la Création du dossier  : %@", error);
                         }
 
                     } else if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] isDirectory:&isDirectory] || forceDownloading || _autoRefresh || refreshByToolbar) {
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
-                            NSLog(@"An error occured during the Creation of Template folder : %@", error);
+                            NSLog(@"Une erreur est survenue lors de la Création du dossier  : %@", error);
                         }
                     }
                     path = [NSString stringWithFormat:@"%@%@%@/%@", APPLICATION_SUPPORT_PATH, firstDir, sndDir, fileName];
@@ -234,7 +256,7 @@ BOOL roamingSituation;
                     if (![fileManager fileExistsAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, dirName] isDirectory:&isDirectory] || forceDownloading || _autoRefresh || refreshByToolbar) {
                         success = [fileManager createDirectoryAtPath:[NSString stringWithFormat:@"%@%@", APPLICATION_SUPPORT_PATH, dirName] withIntermediateDirectories:YES attributes:nil error:&error];
                         if (!success) {
-                            NSLog(@"An error occured during the Creation of Template folder : %@", error);
+                            NSLog(@"Une erreur est survenue lors de la Création du dossier : %@", error);
                         }
                     }
                 }
@@ -249,12 +271,12 @@ BOOL roamingSituation;
                         // Check if user enable Roaming for our app
                         if (roamingIsEnabled) {
                             
-                            success = [self testConnection];
+                            success = [AppDelegate testConnection];
                             if (success) {
                                 //NSLog(@"[SaveFile] Connection is OK");
                                 success =[[NSData dataWithContentsOfURL:location] writeToFile:path options:NSDataWritingAtomic error:&error];
                                 if (!success) {
-                                    NSLog(@"An error occured during the Saving of the file %@ : %@", fileName, error);
+                                    NSLog(@"Une erreur est survenue lors du la sauvegarde du fichier %@ : %@", fileName, error);
                                     _isDownloadedByNetwork = false;
                                 } else {
                                     _isDownloadedByNetwork = true;
@@ -264,12 +286,12 @@ BOOL roamingSituation;
                         // User is in Roaming case but disable it => Do not download
                     } else {
                         // User is not in Roaming case => Download
-                        success = [self testConnection];
+                        success = [AppDelegate testConnection];
                         if (success) {
                             //NSLog(@"[SaveFile] Connection is OK");
                             success =[[NSData dataWithContentsOfURL:location] writeToFile:path options:NSDataWritingAtomic error:&error];
                             if (!success) {
-                                NSLog(@"An error occured during the Saving of the file %@ : %@", fileName, error);
+                                NSLog(@"Une erreur est survenue lors du la sauvegarde du fichier %@ : %@", fileName, error);
                                 _isDownloadedByNetwork = false;
                             } else {
                                 _isDownloadedByNetwork = true;
@@ -283,7 +305,7 @@ BOOL roamingSituation;
         }
     }
     @catch (NSException *e) {
-        NSLog(@"An error occured during the Loading of the file %@ : %@, reason : %@", fileName, e.name, e.reason);
+        NSLog(@"Une erreur est survenue lors du chargement du fichier %@ : %@, raison : %@", fileName, e.name, e.reason);
         UIApplication *app = [UIApplication sharedApplication];
         [app performSelector:@selector(suspend)];
         // Wait while app is going background
@@ -347,12 +369,13 @@ BOOL roamingSituation;
                         [self saveFile:[allPageDep objectForKey:@"Url"] fileName:[allPageDep objectForKey:@"Name"]dirName:[allPageDep objectForKey:@"Path"]];
                     }
                     else {
-                        NSLog(@"An error occured during the Search of %@'s dependencies : one or more parameters are null !", [allPages objectForKey:@"Name"]);
+                        NSLog(@"Une erreur est survenue lors du chargement des dépendances de %@.", [allPages objectForKey:@"Name"]);
                     }
                 }
-                /*if ([allPages objectForKey:@"LogoUrl"] != [NSNull null]) {
+            /*if ([allPages objectForKey:@"LogoUrl"] != [NSNull null]) {
                  // Loading images
-                 [self saveFile:[allPages objectForKey:@"LogoUrl"] fileName:[allPages objectForKey:@"Name"] dirName:@"Images"];
+                NSString *name = [[allPages objectForKey:@"LogoUrl"] lastPathComponent];
+                 [self saveFile:[allPages objectForKey:@"LogoUrl"] fileName:name dirName:@"Images"];
                  }*/
             }
         }
@@ -379,7 +402,7 @@ BOOL roamingSituation;
             [appliSupportDir URLByAppendingPathComponent:bundle isDirectory:YES];
         }
         else {
-            NSLog(@"An error occured during the Creation of Application Support folder : %@", error);
+            NSLog(@"Une erreur est survenue lors de la Création du dossier Application Support : %@", error);
         }
         
         [self getSettings];
@@ -391,7 +414,10 @@ BOOL roamingSituation;
         } else {
             self.deviceType = @"Mobile";
         }
-        self.OS = @"IOS";
+        self.OS = [[UIDevice currentDevice] systemName];
+        
+        NSDictionary *dico = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+        NSArray *preferedLang = [NSLocale preferredLanguages];
         
 #pragma Download & save Json Files
         // Read Json file in network
@@ -400,8 +426,7 @@ BOOL roamingSituation;
             // Get Application File
             // Get config file
             //NSString *query = [NSString stringWithFormat:@"?key1=%@&key2=%@", self.OS, self.deviceType];
-            //NSString *webApi = [NSString stringWithFormat:@"%@%@%@", [config objectForKey:@"WebAPI"], [config objectForKey:@"ApplicationID"], query];
-            
+            //NSString *webApi = [NSString stringWithFormat:@"%@%@%@", [config objectForKey:@"WebAPI"], [config objectForKey:@"ApplicationID"], query];            
             NSString *webApi = [NSString stringWithFormat:@"%@%@", [config objectForKey:@"WebAPI"], [config objectForKey:@"ApplicationID"]];
             NSURL *url = [NSURL URLWithString:webApi];
             
@@ -410,20 +435,18 @@ BOOL roamingSituation;
                 NSLog(@"File exists");
                 self.applicationDatas = [NSData dataWithContentsOfFile:path options:NSDataReadingMappedIfSafe error:&error];
                 APPLICATION_FILE = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:self.applicationDatas options:NSJSONReadingMutableLeaves error:&error];
+                // Auto Refresh
                 // Get file's date
                 NSDictionary *attributes = [fileManager attributesOfItemAtPath:[NSString stringWithFormat:@"%@",path] error:&error];
                 self.downloadDate = [attributes fileModificationDate];
                 NSTimeInterval currentInterval = [[NSDate date] timeIntervalSinceDate:self.downloadDate];
-                // Get server config
-                if ([APPLICATION_FILE objectForKey:@"SynchronizationInterval"] != [NSNull null]) {
-                    NSTimeInterval interval = [[APPLICATION_FILE objectForKey:@"SynchronizationInterval"] longLongValue];
-                    // Check if it's necessary to refresh datas
-                    if (currentInterval > interval) {
-                        _autoRefresh = YES;
-                    } else {
-                        _isDownloadedByFile = true;
-                        [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.downloadDate forKey:@"downloadDate"]];
-                    }
+                long long interval = [AppDelegate getRefreshInfo];
+                // Check if it's necessary to refresh datas
+                if (currentInterval > interval) {
+                    _autoRefresh = YES;
+                } else {
+                    _isDownloadedByFile = true;
+                    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.downloadDate forKey:@"downloadDate"]];
                 }
             }
             if (!_isDownloadedByFile|| forceDownloading || _autoRefresh || refreshByToolbar) {
@@ -438,7 +461,7 @@ BOOL roamingSituation;
                         if (roamingIsEnabled) {
                             
                             // User is in Roaming case & enable it => Download
-                            success = [self testConnection];
+                            success = [AppDelegate testConnection];
                             if (success) {
                                 self.applicationDatas = [NSData dataWithContentsOfURL:url];
                                 success = [[NSData dataWithContentsOfURL:url] writeToFile:path options:NSDataWritingAtomic error:&error];
@@ -450,7 +473,7 @@ BOOL roamingSituation;
                         // User is in Roaming case but disable it => Alert & Quit
                     } else {
                         // User is not in Roaming case => Download
-                        success = [self testConnection];
+                        success = [AppDelegate testConnection];
                         if (success) {
                             self.applicationDatas = [NSData dataWithContentsOfURL:url];
                             success = [[NSData dataWithContentsOfURL:url] writeToFile:path options:NSDataWritingAtomic error:&error];
@@ -468,10 +491,15 @@ BOOL roamingSituation;
                 }
             }
             if (self.applicationDatas != Nil) {
+                // If there no connection, take cache
+                if (!_isDownloadedByNetwork) {
+                    _isDownloadedByFile = true;
+                    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.downloadDate forKey:@"downloadDate"]];
+                }
                 APPLICATION_FILE = (NSMutableDictionary *)[NSJSONSerialization JSONObjectWithData:self.applicationDatas options:NSJSONReadingMutableLeaves error:&error];
                 if (APPLICATION_FILE != Nil) {
                     [self searchDependencies];
-                    /*if ([APPLICATION_FILE objectForKey:@"VersionID"]) {
+                    /*if ([APPLICATION_FILE objectForKey:@"VersionID"] != [NSNull null]) {
                         if (!self.VersionID) {
                             self.VersionID = (long)[APPLICATION_FILE objectForKey:@"VersionID"];
                         } else if (self.VersionID != (long)[APPLICATION_FILE objectForKey:@"VersionID"]) {
@@ -481,38 +509,33 @@ BOOL roamingSituation;
                         NSNumber *num = [NSNumber numberWithLong:self.VersionID];
                         [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:num forKey:@"VersionID"]];
                     }*/
-                        if ([[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] && [[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]) {
-                            // Check if change
-                            if (self.refreshInterval != [NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey:@"intervalChoice"]]
-                                || self.refreshDuration != [[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"]) {
-                                self.refreshInterval = [NSNumber numberWithInt:[[NSUserDefaults standardUserDefaults] integerForKey:@"intervalChoice"]];
-                                self.refreshDuration = [[NSUserDefaults standardUserDefaults] stringForKey:@"durationChoice"];
-                            }
-                        } else {
+                        if (![[NSUserDefaults standardUserDefaults] objectForKey:@"intervalChoice"] && ![[NSUserDefaults standardUserDefaults] objectForKey:@"durationChoice"]) {
                             // Default values : serveur config
                             long long interval = [[APPLICATION_FILE objectForKey:@"SynchronizationInterval"] longLongValue];
                             long long howHours = interval / 3600;
                             long long howDays = 0;
+                            NSNumber *intervalTime;
+                            NSString *duration;
                             if (howHours > 24) {
                                 howDays = howHours / 24;
-                                self.refreshInterval = [NSNumber numberWithInt:(int)howDays];
-                                self.refreshDuration = @"jour";
+                                intervalTime = [NSNumber numberWithInt:(int)howDays];
+                                duration = @"jour";
                             } else {
-                                self.refreshInterval = [NSNumber numberWithInt:(int)howHours];
-                                self.refreshDuration = @"heure";
+                                intervalTime = [NSNumber numberWithInt:(int)howHours];
+                                duration = @"heure";
                             }
-                            NSLog(@"Server: %lld, interval = %d, duration = %@", interval, [self.refreshInterval integerValue], self.refreshDuration);
-                            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.refreshInterval forKey:@"intervalChoice"]];
-                            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:self.refreshDuration forKey:@"durationChoice"]];
+                            NSLog(@"Server: %lld, interval = %lld, duration = %@", interval, [intervalTime longLongValue], duration);
+                            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:intervalTime forKey:@"intervalChoice"]];
+                            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:duration forKey:@"durationChoice"]];
+                        
                         }
-                }
-                else {
+                } else {
                     NSLog(@"An error occured during the Deserialization of Application file : %@", error);
                 }
             }
         }
         @catch (NSException *exception) {
-            NSLog(@"An error occured during the Saving of a Json file : %@, reason : %@", exception.name, exception.reason);
+            NSLog(@"Une erreur est survenue lors de la sauvegarde du fichier json : %@, raison : %@", exception.name, exception.reason);
             UIApplication *app = [UIApplication sharedApplication];
             [app performSelector:@selector(suspend)];
             // Wait while app is going background
@@ -538,8 +561,6 @@ BOOL roamingSituation;
         }
     }
 }
-
-
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

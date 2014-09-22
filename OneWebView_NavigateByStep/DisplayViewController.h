@@ -19,14 +19,15 @@
 @property NSString *PageID;
 @property NSString *NavigateTo;
 @property NSString *FeedID;
+@property NSString *pageDetailsTitle;
+@property NSString *previousPageTitle;
+
+@property NSString *content;
+@property NSString *path;
 
 @property (strong, nonatomic) UIAlertView *SettingsDone;
 @property (strong, nonatomic) UIActivityViewController *ShareActivity;
 @property CustomInfoView *customactivity;
-@property UIViewController *lastController;
-
-@property (strong,nonatomic) NSString *whereWasI;
-@property (strong,nonatomic) NSString *viewInfo;
 
 @property BOOL isMenu;
 

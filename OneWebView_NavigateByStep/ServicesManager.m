@@ -27,6 +27,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     self.appMenu = [[NSMutableArray alloc] init];
     if (APPLICATION_FILE != Nil) {
         self.nbMenuItem = 0;
@@ -49,14 +50,16 @@
     int nbSwitchOff = 0;
     for (UITableViewCellWithSwitch *cell in self.tableView.visibleCells) {
         
-        NSLog(@"[viewDisapear] Status for %@ = %hhd", cell.title.text, cell.status.isOn);
-        
-        if (cell.status.isOn) {
-            nbSwitchOn++;
-            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:cell.title.text]];
+        if (cell.status.hidden) {
+            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:2] forKey:cell.title.text]];
         } else {
-            nbSwitchOff++;
-            [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:cell.title.text]];
+            if (cell.status.isOn) {
+                nbSwitchOn++;
+                [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:0] forKey:cell.title.text]];
+            } else {
+                nbSwitchOff++;
+                [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:[NSNumber numberWithInteger:1] forKey:cell.title.text]];
+            }
         }
     }
     NSLog(@"Nb Cells = 7. On = %d, Off = %d", nbSwitchOn, nbSwitchOff);
@@ -89,14 +92,35 @@
     self.itemMenu = self.appMenu[indexPath.row];
     
     if ([[self.itemMenu objectForKey:@"Title"] isKindOfClass:[NSNull class]]) {
-        cell.title.text = @"No Name property";
+        cell.title.text = @"Sans titre";
     } else {
         cell.title.text = [[self.itemMenu objectForKey:@"Title"] description];
     }
     
-    NSDictionary *dico = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
-    [cell.status setOn:[AppDelegate serviceStatusFor:cell.title.text]];
-    NSLog(@"[willDisplay] Status for %@ = %hhd", cell.title.text, cell.status.isOn);
+    switch ([AppDelegate serviceStatusFor:cell.title.text]) {
+        case CellStyleBlocked:
+        {
+            [cell.status setHidden:YES];
+            [cell.imgView setHidden:NO];
+        }
+            break;
+        case CellstyleIsOff:
+        {
+            [cell.status setOn:NO];
+            [cell.status setHidden:YES];
+            [cell.imgView setHidden:NO];
+        }
+            break;
+        case CellStyleIsOn:
+        {
+            [cell.status setOn:YES];
+            [cell.status setHidden:YES];
+            [cell.imgView setHidden:NO];
+        }
+            break;
+        default:
+            break;
+    }
     
     return cell;
 }

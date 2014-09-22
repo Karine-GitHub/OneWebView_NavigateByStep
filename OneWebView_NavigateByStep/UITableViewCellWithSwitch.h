@@ -13,5 +13,6 @@
 @property IBOutlet UIView *view;
 @property IBOutlet UILabel *title;
 @property IBOutlet UISwitch *status;
+@property (strong, nonatomic) IBOutlet UIImageView *imgView;
 
 @end

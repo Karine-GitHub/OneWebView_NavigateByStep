@@ -22,6 +22,12 @@ extern BOOL roamingIsEnabled;
 extern BOOL roamingSituation;
 // END GLOBAL VARIABLES
 
+typedef NS_ENUM(NSInteger, CellStyle) {
+    CellStyleIsOn,
+    CellstyleIsOff,
+    CellStyleBlocked
+};
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
@@ -31,8 +37,7 @@ extern BOOL roamingSituation;
 
 // Settings
 @property BOOL autoRefresh;
-@property NSNumber *refreshInterval;
-@property NSString *refreshDuration;
+
 @property NSDate *downloadDate;
 
 // Used for checking if downloading is OK (differentiation for setting an appropriate error message)
@@ -46,9 +51,10 @@ extern BOOL roamingSituation;
 @property (strong, nonatomic) NSString *deviceType;
 
 - (void) configureApp;
-- (BOOL) testConnection;
-- (BOOL) testFastConnection;
-+ (BOOL) serviceStatusFor:(NSString *)statusName;
++ (BOOL) testConnection;
++ (BOOL) testFastConnection;
++ (CellStyle) serviceStatusFor:(NSString *)statusName;
++ (long long)getRefreshInfo;
 + (NSNumber *) getSizeOf:(NSString *)path;
 + (NSMutableString *) addFiles:(NSArray *)dependencies;
 + (NSString *)createHTMLwithContent:(NSString *)htmlContent withAppDep:(NSArray *)appDep withPageDep:(NSArray *)pageDep;

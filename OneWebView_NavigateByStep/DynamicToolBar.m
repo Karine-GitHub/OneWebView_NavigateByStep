@@ -48,7 +48,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowApplicationSettings"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *settingsImg = [[UIImage imageNamed:@"20-gear2.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *settings = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"settings-free.png"] style:UIBarButtonItemStyleBordered target:self action:@selector(settingsClick:)];
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
 
@@ -67,7 +66,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowFiltering"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *filterImg = [[UIImage imageNamed:@"Filter-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *filter = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStyleBordered target:self action:@selector(filterClick:)];
         [filter setImage:[UIImage imageNamed:@"filter-free.png"]];
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -78,7 +76,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowSorting"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *sortImg = [[UIImage imageNamed:@"sort-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *sort = [[UIBarButtonItem alloc] initWithTitle:@"Sort" style:UIBarButtonItemStyleBordered target:self action:@selector(sortClick:)];
         [sort setImage:[UIImage imageNamed:@"sort_alphabetical_free.png"]];
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -88,7 +85,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowSharing"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *shareImg = [[UIImage imageNamed:@"share.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *share = [[UIBarButtonItem alloc] initWithTitle:@"Share" style:UIBarButtonItemStyleBordered target:self action:@selector(shareClick:)];
         [share setImage:[UIImage imageNamed:@"ShareFree-32.png"]];
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -98,7 +94,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowGeolocalisation"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *geolocImg = [[UIImage imageNamed:@"geolocation-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *geolocation = [[UIBarButtonItem alloc] initWithTitle:@"Loc" style:UIBarButtonItemStyleBordered target:self action:@selector(geolocationClick:)];
         [geolocation setImage:[UIImage imageNamed:@"maps-free.png"]];
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -108,7 +103,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowAddContact"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *contactImg = [[UIImage imageNamed:@"contact.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *contact = [[UIBarButtonItem alloc] initWithTitle:@"Contact" style:UIBarButtonItemStyleBordered target:self action:@selector(contactClick:)];
         [contact setImage:[UIImage imageNamed:@"Business-Contact-icon.png"]];
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -118,7 +112,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowAddCalendar"] isEqual:[NSNumber numberWithBool:YES]]) {
-        //UIImage *calendarImg = [[UIImage imageNamed:@"calendar-44.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         UIBarButtonItem *calendar = [[UIBarButtonItem alloc] initWithTitle:@"Calendar" style:UIBarButtonItemStyleBordered target:self action:@selector(calendarClick:)];
         [calendar setImage:[UIImage imageNamed:@"Calendar-free.png"]];
         UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
@@ -128,12 +121,6 @@ double itemCount;
     }
     
     if ([[steps valueForKey:@"AllowPageNavigation"] isEqual:[NSNumber numberWithBool:YES]]) {
-        DisplayViewController *controller = (DisplayViewController *)[parentView nextResponder];
-        
-       /*NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getPageNavigationInfo()"];
-       NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
-       NSDictionary *jsonResult = (NSDictionary *)[NSJSONSerialization JSONObjectWithData:dataResult options:kNilOptions error:nil];*/
-        
         UIStepper *navigate = [[UIStepper alloc] init];
         [navigate setMinimumValue:0];
         [navigate setMaximumValue:itemCount];
@@ -142,6 +129,7 @@ double itemCount;
         [navigate setIncrementImage:[UIImage imageNamed:@"arrow-down-free.png"] forState:UIControlStateNormal];
         [navigate setDecrementImage:[UIImage imageNamed:@"arrow-up-free.png"] forState:UIControlStateNormal];
         UIBarButtonItem *stepperContainer = [[UIBarButtonItem alloc] initWithCustomView:navigate];
+        
         [toolBarItems addObject:stepperContainer];
     }
     
@@ -158,13 +146,21 @@ double itemCount;
 
 + (void) dataRefreshClick:(id)sender
 {
-    AppDelegate *appDel = [[AppDelegate alloc] init];
-    DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
-    
-    refreshByToolbar = YES;
-    [appDel performSelectorInBackground:@selector(configureApp) withObject:appDel];
-    
-    [controller initApp];
+    if (![AppDelegate testConnection]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertView *noConnection = [[UIAlertView alloc] initWithTitle:@"Situation du Réseau" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+        noConnection.message = @"La connexion réseau actuelle est trop failble ou coupée. Il est impossible de télécharger le contenu.";
+        [noConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+        });
+    } else {
+        AppDelegate *appDel = [[AppDelegate alloc] init];
+        DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
+        
+        refreshByToolbar = YES;
+        [appDel performSelectorInBackground:@selector(configureApp) withObject:appDel];
+        
+        [controller initApp];
+    }
 }
 
 + (void) searchClick:(id)sender
@@ -190,7 +186,14 @@ double itemCount;
 
 + (void) shareClick:(id)sender
 {
-    DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
+    if (![AppDelegate testConnection]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIAlertView *noConnection = [[UIAlertView alloc] initWithTitle:@"Situation du Réseau" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            noConnection.message = @"La connexion réseau actuelle est trop failble ou coupée. Il est impossible de partager le contenu.";
+            [noConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+        });
+    } else {
+        DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
     
     NSString *result = [controller.Display stringByEvaluatingJavaScriptFromString:@"getShareData()"];
     NSData *dataResult = [result dataUsingEncoding:NSUTF8StringEncoding];
@@ -221,6 +224,7 @@ double itemCount;
     UIActivityViewController *share = [[UIActivityViewController alloc] initWithActivityItems:shareArray applicationActivities:nil];
     [share setModalTransitionStyle:UIModalTransitionStyleCoverVertical];
     [controller.navigationController presentViewController:share animated:YES completion:nil];
+    }
 }
 
 + (void) geolocationClick:(id)sender
@@ -425,14 +429,14 @@ double itemCount;
         // Alert user that adding is finished
         if(err) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *successMsg = [NSString stringWithFormat:@"An error occured during the Saving of the appointment."];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Event Saving Failure" message:successMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                NSString *successMsg = [NSString stringWithFormat:@"Une erreur est survenue lors de l'ajout du rendez-vous dans l'agenda."];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Echec de l'ajout du RDV" message:successMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                 [alert performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *successMsg = [NSString stringWithFormat:@"Your appointment is now added in your calendar to the date %@.", event.startDate];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Event Successfully Saved" message:successMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                NSString *successMsg = [NSString stringWithFormat:@"Votre rendez-vous est ajouté à la date du %@.", event.startDate];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Rendez-vous ajouté avec succès" message:successMsg delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
                 [alert performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             });
 
@@ -444,12 +448,14 @@ double itemCount;
 + (void) navigateClick:(UIStepper *)sender
 {
     DisplayViewController *controller = (DisplayViewController *)[[[sender nextResponder] nextResponder] nextResponder];
-    
+
     if (sender.value > currentStepValue) {
         [controller.Display stringByEvaluatingJavaScriptFromString:@"viewNextDetails()"];
     } else {
         [controller.Display stringByEvaluatingJavaScriptFromString:@"viewPreviousDetails()"];
     }
+    NSString *newValue = [NSString stringWithFormat:@"%d sur %d", (int)sender.value + 1, (int)itemCount + 1];
+    controller.navigationItem.title = newValue;
     currentStepValue = sender.value;
 }
 

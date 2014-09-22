@@ -61,9 +61,7 @@
     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:cache forKey:@"cache"]];
     [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary dictionaryWithObject:roaming forKey:@"roaming"]];
     
-    // Notify that settings was modified
-    // Si les settings sont bloquants : cas Cache Mode + cache = Oko, RoamingSituation + RoamingDisable => Event Conflictual Situation
-    // sinon Event Settings is Finished
+    // Notify that settings are done and if they were modified
     if (!self.goToRefresh) {
         self.size = [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue];
         if (self.cacheMode.isOn && self.size == 0.0) {
@@ -89,7 +87,7 @@
     {
         @synchronized(self){
             @try {
-                self.reconfigNecessary = NO;
+                //self.reconfigNecessary = NO;
                 [NSThread sleepForTimeInterval:3.0];
                 // Set Datas & Images Sizes
                 self.dataSize.text = [NSString stringWithFormat:@"%.02f ko", [[AppDelegate getSizeOf:APPLICATION_SUPPORT_PATH] floatValue]];
@@ -99,8 +97,8 @@
                 [self.activity setHidden:YES];
                 self.navigationItem.hidesBackButton = NO;
                 // Alert user that downloading is finished
-                self.errorMsg = [NSString stringWithFormat:@"The downloading of files is done."];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Downloading Successful" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                self.errorMsg = [NSString stringWithFormat:@"Le téléchargement des données est terminé."];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Téléchargement Réussi" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alert performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             } @finally {
                 reloadApp = NO;
@@ -178,7 +176,7 @@
         roamingIsEnabled = self.roamingMode.isOn;
         
         // If conflictual situation, block in Settings view
-        if ((self.cacheMode.isOn && self.size == 0.0) || (roamingSituation && !self.roamingMode.isOn && self.size == 0.0)) {
+        if ((self.cacheMode.isOn || (roamingSituation && !self.roamingMode.isOn)) && self.size == 0.0) {
             self.navigationItem.hidesBackButton = YES;
         } else {
             self.navigationItem.hidesBackButton = NO;
@@ -196,10 +194,10 @@
     @synchronized(self){
         self.reconfigNecessary = YES;
         if (self.cacheMode.isOn && self.size == 0.0) {
-            UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-            alertConflict.message = @"There no datas in cache and application need datas for running. Download content before performing this action.";
+            UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Situation Conflictuelle" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            alertConflict.message = @"Il n'y a pas de données en cache et l'application en a besoin pour fonctionner. Télécharger le contenu avant d'effectuer cette action svp.";
             [alertConflict show];
-            self.reconfigNecessary = YES;
+            self.reconfigNecessary = NO;
             [self.cacheMode setOn:NO];
         }
         cacheIsEnabled = self.cacheMode.isOn;
@@ -210,10 +208,10 @@
     @synchronized(self){
         self.reconfigNecessary = YES;
         if (roamingSituation && !self.roamingMode.isOn && self.size == 0.0) {
-            UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-            alertConflict.message = @"There no datas in cache and application need datas for running. Download content before performing this action.";
+            UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Situation Conflictuelle" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+            alertConflict.message = @"Il n'y a pas de données en cache et l'application en a besoin pour fonctionner. Télécharger le contenu avant d'effectuer cette action svp.";
             [alertConflict show];
-            self.reconfigNecessary = YES;
+            self.reconfigNecessary = NO;
             [self.roamingMode setOn:YES];
         }
         roamingIsEnabled = self.roamingMode.isOn;
@@ -226,10 +224,18 @@
     if ([[tableView cellForRowAtIndexPath:indexPath] isEqual:self.downloadDataCell])
     {
         @synchronized(self){
-            if ((self.cacheMode.isOn || (roamingSituation && !self.roamingMode.isOn)) && self.size == 0.0) {
-                UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
-                alertConflict.message = @"The current configuration does not allow to download the content. Disable it for performing this action.";
+            if (self.cacheMode.isOn || (roamingSituation && !self.roamingMode.isOn)) {
+                UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Situation Conflictuelle" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+                if (self.cacheMode.isOn) {
+                    alertConflict.message = @"La configuration actuelle ne permet pas de télécharger du contenu. Désactiver le mode Cache pour effectuer cette action.";
+                } else {
+                    alertConflict.message = @"La configuration actuelle ne permet pas de télécharger du contenu. Activer mode Roaming pour effectuer cette action.";
+                }
                 [alertConflict performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
+            } else if (![AppDelegate testConnection]) {
+                UIAlertView *noConnection = [[UIAlertView alloc] initWithTitle:@"Situation du Réseau" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK",nil];
+                noConnection.message = @"La connexion réseau actuelle est trop failble ou coupée. Il est impossible de télécharger le contenu.";
+                [noConnection performSelectorOnMainThread:@selector(show) withObject:self waitUntilDone:YES];
             } else {
                 [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
                 
@@ -243,23 +249,23 @@
                 [self.view addSubview:self.activity];
                 
                 self.navigationItem.hidesBackButton = YES;
-                self.reconfigNecessary = YES;
                 // Download all
-                @try {
-                    forceDownloading = YES;
-                    [appDel performSelectorInBackground:@selector(configureApp) withObject:appDel];
-                }
-                @finally {
-                    self.reconfigNecessary = YES;
-                }
+                forceDownloading = YES;
+                [appDel performSelectorInBackground:@selector(configureApp) withObject:appDel];
+                
+                self.reconfigNecessary = YES;
             }
         }
     } else if ([[tableView cellForRowAtIndexPath:indexPath] isEqual:self.deleteCacheCell]) {
         @synchronized(self){
             @try {
-                if ((self.cacheMode.isOn || (roamingSituation && !self.roamingMode.isOn)) && self.size == 0.0) {
-                    UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Conflictual Situation" message:nil delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES",nil];
-                    alertConflict.message = @"Application will need to reload datas for running. The current configuration does not allow it. Are you sure you want to delete content ?";
+                if (self.size == 0.0) {
+                    self.errorMsg = [NSString stringWithFormat:@"Le cache est déjà supprimé."];
+                    UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Suppression Inutile" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                    [alertNoConnection show];
+                } else if (self.cacheMode.isOn || (roamingSituation && !self.roamingMode.isOn)) {
+                    UIAlertView *alertConflict = [[UIAlertView alloc] initWithTitle:@"Situation Conflictuelle" message:nil delegate:self cancelButtonTitle:@"NON" otherButtonTitles:@"OUI",nil];
+                    alertConflict.message = @"L'application a besoin de contenu pour fonctionner et la configuration actuelle ne permet pas son téléchargement. Etes-vous sûr de vouloir supprimer le contenu ?";
                     [alertConflict show];
                 } else {
                     NSFileManager *fm = [NSFileManager defaultManager];
@@ -275,21 +281,21 @@
                             NSException *e = [NSException exceptionWithName:err.localizedDescription reason:err.localizedFailureReason userInfo:err.userInfo];
                             @throw e;
                         }
-                        self.errorMsg = [NSString stringWithFormat:@"The deleting of files is done."];
-                        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Deleting Successful" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        self.errorMsg = [NSString stringWithFormat:@"La suppression des fichiers est terminé."];
+                        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Suppression Réussie" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                         [alertNoConnection show];
                         
                     } else {
-                        self.errorMsg = [NSString stringWithFormat:@"The cache is already cleaned."];
-                        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Deleting Not Necessary" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                        self.errorMsg = [NSString stringWithFormat:@"Le cache est déjà supprimé."];
+                        UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Suppression Inutile" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                         [alertNoConnection show];
                     }
                 }
             }
             @catch (NSException *e) {
                 // TODO : alertView pour informer de l'erreur
-                self.errorMsg = [NSString stringWithFormat:@"An error occured during the Deleting of cache : %@, reason : %@", e.name, e.reason];
-                UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"An Error Occured" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                self.errorMsg = [NSString stringWithFormat:@"Une erreur est survenue lors de la suppression du Cache : %@, reason : %@", e.name, e.reason];
+                UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Comportement Inattendu" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alertNoConnection show];
             }
             @finally {
@@ -422,17 +428,17 @@
                 }
                 if (err) {
                     // TODO : throw exception
-                    NSLog(@"An error occured during the Deleting of cache : %@", err);
+                    NSLog(@"Une erreur est survenue lors de la suppression du Cache : %@", err);
                     NSException *e = [NSException exceptionWithName:err.localizedDescription reason:err.localizedFailureReason userInfo:err.userInfo];
                     @throw e;
                 }
-                self.errorMsg = [NSString stringWithFormat:@"The deleting of files is done."];
-                UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Deleting Successful" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                self.errorMsg = [NSString stringWithFormat:@"La suppression des fichiers est terminé."];
+                UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Suppression Réussie" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alertNoConnection show];
                 
             } else {
-                self.errorMsg = [NSString stringWithFormat:@"The cache is already cleaned."];
-                UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Deleting Not Necessary" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                self.errorMsg = [NSString stringWithFormat:@"Le cache est déjà supprimé."];
+                UIAlertView *alertNoConnection = [[UIAlertView alloc] initWithTitle:@"Suppression Inutile" message:self.errorMsg delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
                 [alertNoConnection show];
             }
         }

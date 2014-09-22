@@ -7,23 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		846C691D19CFFF4700115829 /* 54-lock.png in Resources */ = {isa = PBXBuildFile; fileRef = 846C691C19CFFF4700115829 /* 54-lock.png */; };
 		84BB2CEC19B885FC0073A8FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CEB19B885FC0073A8FE /* Foundation.framework */; };
 		84BB2CEE19B885FC0073A8FE /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CED19B885FC0073A8FE /* CoreGraphics.framework */; };
 		84BB2CF019B885FC0073A8FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CEF19B885FC0073A8FE /* UIKit.framework */; };
-		84BB2CF619B885FD0073A8FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2CF419B885FD0073A8FE /* InfoPlist.strings */; };
 		84BB2CF819B885FD0073A8FE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2CF719B885FD0073A8FE /* main.m */; };
 		84BB2D0519B885FD0073A8FE /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2D0419B885FD0073A8FE /* XCTest.framework */; };
 		84BB2D0619B885FD0073A8FE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CEB19B885FC0073A8FE /* Foundation.framework */; };
 		84BB2D0719B885FD0073A8FE /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84BB2CEF19B885FC0073A8FE /* UIKit.framework */; };
-		84BB2D0F19B885FD0073A8FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D0D19B885FD0073A8FE /* InfoPlist.strings */; };
 		84BB2D1119B885FD0073A8FE /* OneWebView_NavigateByStepTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1019B885FD0073A8FE /* OneWebView_NavigateByStepTests.m */; };
 		84BB2D1F19B886750073A8FE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1B19B886750073A8FE /* AppDelegate.m */; };
 		84BB2D2019B886750073A8FE /* Configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D1C19B886750073A8FE /* Configuration.plist */; };
 		84BB2D2119B886750073A8FE /* DisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D1E19B886750073A8FE /* DisplayViewController.m */; };
-		84BB2D2C19B886840073A8FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2419B886840073A8FE /* InfoPlist.strings */; };
 		84BB2D2D19B886840073A8FE /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2619B886840073A8FE /* Images.xcassets */; };
-		84BB2D2E19B886840073A8FE /* Main_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2719B886840073A8FE /* Main_iPad.storyboard */; };
-		84BB2D2F19B886840073A8FE /* Main_iPhone.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84BB2D2819B886840073A8FE /* Main_iPhone.storyboard */; };
 		84BB2D3019B886840073A8FE /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D2A19B886840073A8FE /* Reachability.m */; };
 		84BB2D3519B886930073A8FE /* RefreshSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D3219B886930073A8FE /* RefreshSettingViewController.m */; };
 		84BB2D3619B886930073A8FE /* ServicesManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 84BB2D3419B886930073A8FE /* ServicesManager.m */; };
@@ -62,28 +58,24 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		846C691C19CFFF4700115829 /* 54-lock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "54-lock.png"; sourceTree = "<group>"; };
 		84BB2CE819B885FC0073A8FE /* OneWebView_NavigateByStep.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OneWebView_NavigateByStep.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84BB2CEB19B885FC0073A8FE /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		84BB2CED19B885FC0073A8FE /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		84BB2CEF19B885FC0073A8FE /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		84BB2CF319B885FD0073A8FE /* OneWebView_NavigateByStep-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OneWebView_NavigateByStep-Info.plist"; sourceTree = "<group>"; };
-		84BB2CF519B885FD0073A8FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		84BB2CF719B885FD0073A8FE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		84BB2CF919B885FD0073A8FE /* OneWebView_NavigateByStep-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OneWebView_NavigateByStep-Prefix.pch"; sourceTree = "<group>"; };
 		84BB2D0319B885FD0073A8FE /* OneWebView_NavigateByStepTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = OneWebView_NavigateByStepTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84BB2D0419B885FD0073A8FE /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		84BB2D0C19B885FD0073A8FE /* OneWebView_NavigateByStepTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OneWebView_NavigateByStepTests-Info.plist"; sourceTree = "<group>"; };
-		84BB2D0E19B885FD0073A8FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		84BB2D1019B885FD0073A8FE /* OneWebView_NavigateByStepTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OneWebView_NavigateByStepTests.m; sourceTree = "<group>"; };
 		84BB2D1A19B886750073A8FE /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		84BB2D1B19B886750073A8FE /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		84BB2D1C19B886750073A8FE /* Configuration.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configuration.plist; sourceTree = "<group>"; };
 		84BB2D1D19B886750073A8FE /* DisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DisplayViewController.h; sourceTree = "<group>"; };
 		84BB2D1E19B886750073A8FE /* DisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DisplayViewController.m; sourceTree = "<group>"; };
-		84BB2D2519B886840073A8FE /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
 		84BB2D2619B886840073A8FE /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		84BB2D2719B886840073A8FE /* Main_iPad.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main_iPad.storyboard; sourceTree = "<group>"; };
-		84BB2D2819B886840073A8FE /* Main_iPhone.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main_iPhone.storyboard; sourceTree = "<group>"; };
 		84BB2D2919B886840073A8FE /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		84BB2D2A19B886840073A8FE /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		84BB2D3119B886920073A8FE /* RefreshSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RefreshSettingViewController.h; sourceTree = "<group>"; };
@@ -198,8 +190,6 @@
 				84BB2D3219B886930073A8FE /* RefreshSettingViewController.m */,
 				84BB2D3319B886930073A8FE /* ServicesManager.h */,
 				84BB2D3419B886930073A8FE /* ServicesManager.m */,
-				84BB2D2719B886840073A8FE /* Main_iPad.storyboard */,
-				84BB2D2819B886840073A8FE /* Main_iPhone.storyboard */,
 				84BB2D2919B886840073A8FE /* Reachability.h */,
 				84BB2D2A19B886840073A8FE /* Reachability.m */,
 				84BB2D1A19B886750073A8FE /* AppDelegate.h */,
@@ -210,7 +200,6 @@
 				84ECF0F319BDE2A70088BC40 /* UITableViewCellWithSwitch.h */,
 				84ECF0F719BDF9140088BC40 /* UITableViewCellWithSwitch.m */,
 				84BB2D2619B886840073A8FE /* Images.xcassets */,
-				84BB2D2319B886840073A8FE /* en.lproj */,
 				84BB2CF219B885FD0073A8FE /* Supporting Files */,
 				84ECF0FC19BEDD380088BC40 /* DynamicToolBar.h */,
 				84ECF0FD19BEDD380088BC40 /* DynamicToolBar.m */,
@@ -224,7 +213,6 @@
 			isa = PBXGroup;
 			children = (
 				84BB2CF319B885FD0073A8FE /* OneWebView_NavigateByStep-Info.plist */,
-				84BB2CF419B885FD0073A8FE /* InfoPlist.strings */,
 				84BB2CF719B885FD0073A8FE /* main.m */,
 				84BB2CF919B885FD0073A8FE /* OneWebView_NavigateByStep-Prefix.pch */,
 			);
@@ -244,22 +232,14 @@
 			isa = PBXGroup;
 			children = (
 				84BB2D0C19B885FD0073A8FE /* OneWebView_NavigateByStepTests-Info.plist */,
-				84BB2D0D19B885FD0073A8FE /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		84BB2D2319B886840073A8FE /* en.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				84BB2D2419B886840073A8FE /* InfoPlist.strings */,
-			);
-			path = en.lproj;
 			sourceTree = "<group>";
 		};
 		84F069CA19C6D74600D28206 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				846C691C19CFFF4700115829 /* 54-lock.png */,
 				84F06A0D19C8789A00D28206 /* arrow-down-free.png */,
 				84F06A0E19C8789A00D28206 /* arrow-up-free.png */,
 				84F06A2119C87A9500D28206 /* Business-Contact-icon.png */,
@@ -340,6 +320,8 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				fr,
+				Base,
 			);
 			mainGroup = 84BB2CDF19B885FC0073A8FE;
 			productRefGroup = 84BB2CE919B885FC0073A8FE /* Products */;
@@ -357,19 +339,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BB2CF619B885FD0073A8FE /* InfoPlist.strings in Resources */,
 				84BB2D2D19B886840073A8FE /* Images.xcassets in Resources */,
+				846C691D19CFFF4700115829 /* 54-lock.png in Resources */,
 				84F069EA19C706C600D28206 /* BackButtonHome-44.png in Resources */,
 				84F06A1619C8789A00D28206 /* arrow-up-free.png in Resources */,
-				84BB2D2C19B886840073A8FE /* InfoPlist.strings in Resources */,
 				84F06A1B19C8789A00D28206 /* settings-free.png in Resources */,
 				84F06A1A19C8789A00D28206 /* maps-free.png in Resources */,
 				84F06A2219C87A9500D28206 /* Business-Contact-icon.png in Resources */,
-				84BB2D2E19B886840073A8FE /* Main_iPad.storyboard in Resources */,
 				84F06A1919C8789A00D28206 /* filter-free.png in Resources */,
 				84F06A1519C8789A00D28206 /* arrow-down-free.png in Resources */,
 				84F06A1719C8789A00D28206 /* Calendar-free.png in Resources */,
-				84BB2D2F19B886840073A8FE /* Main_iPhone.storyboard in Resources */,
 				84F06A1C19C8789A00D28206 /* ShareFree-32.png in Resources */,
 				84BB2D2019B886750073A8FE /* Configuration.plist in Resources */,
 				84F06A1E19C878E100D28206 /* sort_alphabetical_free.png in Resources */,
@@ -380,7 +359,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BB2D0F19B885FD0073A8FE /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,33 +399,6 @@
 			targetProxy = 84BB2D0819B885FD0073A8FE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		84BB2CF419B885FD0073A8FE /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				84BB2CF519B885FD0073A8FE /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		84BB2D0D19B885FD0073A8FE /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				84BB2D0E19B885FD0073A8FE /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		84BB2D2419B886840073A8FE /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				84BB2D2519B886840073A8FE /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		84BB2D1219B885FD0073A8FE /* Debug */ = {
